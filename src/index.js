@@ -1,9 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+// import App from './App';
+import Fd from './frontDesk/props';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Fdx from './frontDesk/propseditSkalaKecil';
 
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/edit/permohonan/skala/kecil/:id" element={<Fdx />}></Route>
+        <Route path="/create/permohonan/skala/kecil" element={<Fd></Fd>}></Route>
+        
+        {/* <Route path='/edit/permohonan/skala/kecil'></Route> */}
+      </Routes>
+    </BrowserRouter>
+  );
+}
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
