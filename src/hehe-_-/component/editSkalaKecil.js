@@ -13,8 +13,8 @@ function EditSkalaKecil(state) {
     const [dokumenFile, setDokumenFile] = useState(["a","b","c","d","e"]);
     async function haduh (ehem) {
         console.log(ehem);
-        await axios.put('http://127.0.0.1:8000/edit/permohonan/skala/kecil/'+ehem+"/").then((data) => {
-            console.log(data.data);
+        await axios.put('http://127.0.0.1:8000/edit/permohonan/skala/kecil/' + ehem + "/").then((data) => {
+            console.log(data.data.perusahaan)
             setDaftarMesin(eval(data.data.perusahaan.daftar_mesin));
             setJenisProduk(eval(data.data.perusahaan.jenis_produk));
             state.data.setState({
@@ -59,7 +59,7 @@ function EditSkalaKecil(state) {
         }
             ).catch((err) =>{
             });
-        // console.log(state.data.state)
+        // console.log("database",state.data.state);
     }
     useEffect(() => {
         setId(window.location.pathname.split("/")[5]);
@@ -67,10 +67,9 @@ function EditSkalaKecil(state) {
     },[]) 
     
     async function najis(formData) {
-        await axios.post('http://127.0.0.1:8000/test/', formData, Headers = { "content-type": "multipart/form-data" }).then(e => {
+        await axios.post('http://127.0.0.1:8000/edit/dokumen/', formData, Headers = { "content-type": "multipart/form-data" }).then(e => {
             
         })
-        // console.log(formData)
     }
     function submitDocument(id) {
         let shit = { "a": "surat_permohonan.pdf", "b": "NIB.pdf", "c": "dokumen_lingkungan.pdf", "d": "surat_pernyataan_pengelolaan.pdf", "e": "pernyataan_oss.pdf" };
@@ -98,10 +97,10 @@ function EditSkalaKecil(state) {
         let form = {
             "Perusahaan": { ...state.data.state.Perusahaan },
             "Permohonan": { ...state.data.state.Permohonan },
-            "Dokumen":{...state.data.state.Dokumen}
-        }
-        form.Perusahaan.jenis_produk_kecil = jenisProduk;
-        form.Perusahaan.daftar_mesin_kecil = daftarMesin;
+            "Dokumen": { ...state.data.state.Dokumen }
+        };
+        form.Perusahaan.jenis_produk = jenisProduk;
+        form.Perusahaan.daftar_mesin = daftarMesin;
         form.Permohonan.sub_date = yyyy;
         form.Permohonan.sub_date += "-";
         form.Permohonan.sub_date += mm < 10 ? "0" + String(mm + 1) : String(mm);
@@ -111,11 +110,13 @@ function EditSkalaKecil(state) {
         for (let adohhh in state.data.state.dokumenFile) {
             if (state.data.state.dokumenFile[adohhh].bol) {
                 form.Dokumen[shit[adohhh]].read_true = true;
+            } else {
+                form.Dokumen[shit[adohhh]].read_true = false;
             }
         }
         let idx;
         console.log("form",form)
-        await axios.post('http://127.0.0.1:8000/create/permohonan/skala/besar', form).then((resp) => {
+        await axios.put('http://127.0.0.1:8000/edit/permohonan/skala/kecils/'+id+'/', form).then((resp) => {
             console.log("data",resp.data,resp);
             idx = resp.data.data.id_request;
         }).catch(err => {
@@ -428,7 +429,7 @@ function EditSkalaKecil(state) {
                             <div id="dokumen">
                                 <div>
                                 <button><img src={logo}></img></button>
-                                <input type="button" value={"Delete"} id={ae} onClick={(e)=>state.data.setState({dokumenFile:{...state.data.state.dokumenFile,[e.target.id]:0,bol:false}})}></input>
+                                <input type="button" value={"Delete"} id={ae} onClick={(e)=>state.data.setState({dokumenFile:{...state.data.state.dokumenFile,[e.target.id]:{file:0,bol:false}}})}></input>
                                 <input type="button" value={"Download"} id={ae} onClick={(e)=>FileSaver(state.data.state.dokumenFile[e.target.id].file)}></input>
                                 <input type="button" value={"View"} id={ae}
                                     onClick={(e) => {

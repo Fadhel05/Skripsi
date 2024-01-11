@@ -10,28 +10,29 @@ class Fdx extends React.Component{
             
                 Permohonan:{
                     id_pegawai :1,
-                    sub_date:"2023-12-14",
-                    skala :"Kecil",
-                    status_permohonan:"sdfsa",
-                    posisi:"fd",
-                    readTrue:false
+                    sub_date:"",
+                    skala :"",
+                    status_permohonan:"",
+                    posisi:"",
+                    readTrue:undefined
 
                 },
-                Perusahaan: {
+            Perusahaan: {
+                    id_perusahaan:0,
                     nama_pelakuUsaha:"",
-                    nama_pbphh :"nama_pbphh",
-                    kbli:"kbli",
-                    nib :"nib",
-                    npwp :"npwp",
-                    alamat_kantor:"alamat_kantor",
-                    alamat_usaha :"alamat Usaha",
-                    alamat_gudang :"alamat gudang",
-                    jenis_produk_kecil :["x","y","z","f","f"],
-                    daftar_mesin_kecil :["x","y","z","f","f"],
-                    sumber_bahan:"bahan",
-                    total_investasi: 1,
-                    status_permohonan :"test",
-                    jumlah_tenaga_kerja:1
+                    nama_pbphh :"",
+                    kbli:"",
+                    nib :"",
+                    npwp :"",
+                    alamat_kantor:"",
+                    alamat_usaha :"",
+                    alamat_gudang :"",
+                    jenis_produk_kecil :[],
+                    daftar_mesin_kecil :[],
+                    sumber_bahan:"",
+                    total_investasi: null,
+                    status_permohonan :"",
+                    jumlah_tenaga_kerja:null
                 },
                 Dokumen: [
                     {

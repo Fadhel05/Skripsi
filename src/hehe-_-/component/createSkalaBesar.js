@@ -3,14 +3,14 @@ import axios from "axios";
 import FileSaver from "file-saver";
 import { Document } from "react-pdf";
 import logo from "../../img/Untitled.png"
-function CreateSkalaKecil(state) {
+function CreateSkalaBesar(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
-    const [dokumenFile, setDokumenFile] = useState(["a","b","c","d","e"]);
+    const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
+    const [jenisProdukAsli, setJenisProdukAsli] = useState([]);
+    const [daftarMesinAsli, setDaftarMesinAsli] = useState([]);
     async function haduh () {
         await axios.get('http://127.0.0.1:8000/test/').then((data) => {
-            
-
         }
             ).catch((err) =>{
         });
@@ -18,7 +18,7 @@ function CreateSkalaKecil(state) {
     useEffect(() => {
         haduh();
     },[]) 
-    
+
     async function najis(formData) {
         await axios.post('http://127.0.0.1:8000/test/', formData, Headers = { "content-type": "multipart/form-data" }).then(e => {
             
@@ -30,7 +30,6 @@ function CreateSkalaKecil(state) {
         let kumpulanshi = [];
         for (let p in shit) {
             if (state.data.state.dokumenFile[p].bol) {
-                console.log("hadohhhh")
                 let doks = new FormData();
                 doks.append("namaDokumen", id+shit[p]);
                 doks.append("dataDokumen", state.data.state.dokumenFile[p].file);
@@ -55,8 +54,8 @@ function CreateSkalaKecil(state) {
             "Permohonan": { ...state.data.state.Permohonan },
             "Dokumen":{...state.data.state.Dokumen}
         }
-        form.Perusahaan.jenis_produk_kecil = jenisProduk;
-        form.Perusahaan.daftar_mesin_kecil = daftarMesin;
+        form.Perusahaan.jenis_produk = jenisProdukAsli;
+        form.Perusahaan.daftar_mesin = daftarMesinAsli;
         form.Permohonan.sub_date = yyyy;
         form.Permohonan.sub_date += "-";
         form.Permohonan.sub_date += mm < 10 ? "0" + String(mm + 1) : String(mm);
@@ -201,6 +200,53 @@ function CreateSkalaKecil(state) {
                     }} 
                     
                 ></input><br></br>
+
+                <input type="button"
+                    onClick={() => {
+                        document.getElementById("anjenglah").hidden = false;
+                    }}
+                    value={"Add"}
+                ></input><br></br>
+                <table>
+                <tr>
+                    <th>Jenis Pengelolahan</th>
+                    <th>Ragam Produk</th>
+                    <th>KBLI</th>
+                    <th>Kapasitas Izin Produksi</th>
+                    <th>Keterangan</th>
+                    <th>Action</th>
+                    </tr>
+                    {jenisProdukAsli.map((e, i)=>{
+                        return (<tr>
+                            <td>{e[0]}</td>
+                            <td>{e[1]}</td>
+                            <td>{e[2]}</td>
+                            <td>{e[3]}</td>
+                            <td>{e[4]}</td>
+                            <td><input type="button"
+                                value={"Delete"}
+                                onClick={() => {
+                                    let prx = [...jenisProdukAsli];
+                                    let shit = [];
+                                    prx = prx.forEach((ex,ie) => {
+                                        if (i == ie) {
+                                            
+                                        } else {
+                                            shit.push(ex);
+                                        }
+                                    })
+                                    
+                                    setJenisProdukAsli(shit);
+                                }}
+                            ></input></td>
+                        </tr>);
+                    })}
+                </table>
+
+
+
+                <br></br>
+                <div id="anjenglah" hidden={true}>
                 <label for='jenisPengelolahan'>Jenis Pengelolahan</label>
                 <input type='text' id='jenisPengelolahan'
                     onChange={(e) => {
@@ -210,7 +256,8 @@ function CreateSkalaKecil(state) {
                         var p = [...jenisProduk];
                         p[0] = e.target.value;
                         setJenisProduk(p);
-                    }} 
+                        }}
+                        value={jenisProduk[0]}
                 ></input><br></br>
                 <label for='ragamProduk'>Ragam Produk</label>
                 <input type='text' id='ragamProduk'
@@ -222,7 +269,9 @@ function CreateSkalaKecil(state) {
                         var p = [...jenisProduk];
                         p[1] = e.target.value;
                         setJenisProduk(p);
-                    }}
+                        }}
+                        
+                        value={jenisProduk[1]}
                 ></input><br></br>
                 <label for='KBLI2'>KBLI</label>
                 <input type='text' id='KBLI2'
@@ -233,7 +282,9 @@ function CreateSkalaKecil(state) {
                         var p = [...jenisProduk];
                         p[2] = e.target.value;
                         setJenisProduk(p);
-                    }}
+                        }}
+                        
+                        value={jenisProduk[2]}
                 ></input><br></br>
                 <label for='kapasitasIzinProduksi'>Kapasitas Izin Produksi</label>
                 <input type='text' id='kapasitasIzinProduksi'
@@ -244,7 +295,9 @@ function CreateSkalaKecil(state) {
                         var p = [...jenisProduk];
                         p[3] = e.target.value;
                         setJenisProduk(p);
-                    }}
+                        }}
+                        
+                        value={jenisProduk[3]}
                 ></input><br></br>
                 <label for='keterangan'>Keterangan</label>
                 <input type='text' id='keterangan'
@@ -255,48 +308,138 @@ function CreateSkalaKecil(state) {
                         var p = [...jenisProduk];
                         p[4] = e.target.value;
                         setJenisProduk(p);
-                    }}
-                ></input><br></br>
-                <label for='jenisMesin'>Jenis Mesin</label>
-                <input type='text' id='jenisMesin'
-                    onChange={(e) => {
-                        var p = [...daftarMesin];
-                        p[0] = e.target.value;
-                        setDaftarMesin(p);
-                    }}
-                ></input><br></br>
-                <label for='spesifikasi'>Spesifikasi / Merk / Negara</label>
-                <input type='text' id='spesifikasi'
-                    onChange={(e) => {
-                        var p = [...daftarMesin];
-                        p[1] = e.target.value;
-                        setDaftarMesin(p);
-                    }}
-                ></input><br></br>
-                <label for='kapasitasProduksi'>Kapasitas Produksi</label>
-                <input type='text' id='kapasitasProduksi'
-                    onChange={(e) => {
-                        var p = [...daftarMesin];
-                        p[2] = e.target.value;
-                        setDaftarMesin(p);
-                    }}
-                ></input><br></br>
-                <label for='jumlahUnit'>Jumlah Unit</label>
-                <input type='text' id='jumlahUnit'
-                    onChange={(e) => {
-                        var p = [...daftarMesin];
-                        p[3] = e.target.value;
-                        setDaftarMesin(p);
-                    }}
-                ></input><br></br>
-                <label for='keterangan'>Keterangan</label>
-                <input type='text' id='keterangan'
-                    onChange={(e) => {
-                        var p = [...daftarMesin];
-                        p[4] = e.target.value;
-                        setDaftarMesin(p);
-                    }}
-                ></input><br></br>
+                        }}
+                        
+                        value={jenisProduk[4]}
+                    ></input><br></br>
+                    <input type="button"
+                        onClick={() => {
+                            document.getElementById("anjenglah").hidden = true;
+                        }}
+                        value={"Cancel"}
+                    ></input>
+                    <input type="button"
+                        onClick={() => {
+                            document.getElementById("anjenglah").hidden = true;
+                            let p = jenisProdukAsli;
+                            p.push(jenisProduk);
+                            setJenisProdukAsli(p);
+                            setJenisProduk(["", "", "", "", ""]);
+                        }}
+                        value={"Save"}
+                    ></input>
+                </div>
+
+        <input type="button"
+                            onClick={() => {
+                                document.getElementById("anjinglah").hidden = false;
+                            }}
+                            value={"Add"}
+                        ></input><br></br>
+                        <table>
+                        <tr>
+                            <th>Jenis Mesin</th>
+                            <th>Spesifikasi</th>
+                            <th>Kapasitas Produksi</th>
+                            <th>Jumlah Unit</th>
+                            <th>Keterangan</th>
+                            <th>Action</th>
+                            </tr>
+                            {daftarMesinAsli.map((e, i)=>{
+                                return (<tr>
+                                    <td>{e[0]}</td>
+                                    <td>{e[1]}</td>
+                                    <td>{e[2]}</td>
+                                    <td>{e[3]}</td>
+                                    <td>{e[4]}</td>
+                                    <td><input type="button"
+                                        value={"Delete"}
+                                        onClick={() => {
+                                            let prx = [...daftarMesinAsli];
+                                            let shit = [];
+                                            prx = prx.forEach((ex,ie) => {
+                                                if (i == ie) {
+                                                    
+                                                } else {
+                                                    shit.push(ex);
+                                                }
+                                            })
+                                            
+                                            setDaftarMesinAsli(shit);
+                                        }}
+                                    ></input></td>
+                                </tr>);
+                            })}
+                        </table>
+
+
+
+                        <br></br>
+                        <div id="anjinglah" hidden={true}>
+                        <label for='jenisMesin'>Jenis Mesin</label>
+                        <input type='text' id='jenisMesin'
+                            onChange={(e) => {
+                                var p = [...daftarMesin];
+                                p[0] = e.target.value;
+                                setDaftarMesin(p);
+                            }}
+                        value={daftarMesin[0]}
+                        ></input><br></br>
+                        <label for='spesifikasi'>Spesifikasi / Merk / Negara</label>
+                        <input type='text' id='spesifikasi'
+                            onChange={(e) => {
+                                var p = [...daftarMesin];
+                                p[1] = e.target.value;
+                                setDaftarMesin(p);
+                            }}
+                        value={daftarMesin[1]}
+                        ></input><br></br>
+                        <label for='kapasitasProduksi'>Kapasitas Produksi</label>
+                        <input type='text' id='kapasitasProduksi'
+                            onChange={(e) => {
+                                var p = [...daftarMesin];
+                                p[2] = e.target.value;
+                                setDaftarMesin(p);
+                        }}
+                        
+                        value={daftarMesin[2]}
+                        ></input><br></br>
+                        <label for='jumlahUnit'>Jumlah Unit</label>
+                        <input type='text' id='jumlahUnit'
+                            onChange={(e) => {
+                                var p = [...daftarMesin];
+                                p[3] = e.target.value;
+                                setDaftarMesin(p);
+                            }}
+                        value={daftarMesin[3]}
+                        ></input><br></br>
+                        <label for='keterangan'>Keterangan</label>
+                        <input type='text' id='keterangan'
+                            onChange={(e) => {
+                                var p = [...daftarMesin];
+                                p[4] = e.target.value;
+                                setDaftarMesin(p);
+                        }}
+                        value={daftarMesin[4]}
+                        ></input><br></br>
+                            <input type="button"
+                                onClick={() => {
+                                    document.getElementById("anjinglah").hidden = true;
+                                }}
+                                value={"Cancel"}
+                            ></input>
+                            <input type="button"
+                                onClick={() => {
+                                    document.getElementById("anjinglah").hidden = true;
+                                    let p = daftarMesinAsli;
+                                    p.push(daftarMesin);
+                                    setDaftarMesinAsli(p);
+                                    setDaftarMesin(["", "", "", "", ""]);
+                                }}
+                                value={"Save"}
+                            ></input>
+                        </div>
+
                 <label for='sumber'>Sumber Bahan Baku</label>
                 <input type='text' id='sumber'
                     onChange={(e) => {
@@ -346,7 +489,7 @@ function CreateSkalaKecil(state) {
                             <div id="dokumen">
                                 <div>
                                 <button><img src={logo}></img></button>
-                                <input type="button" value={"Delete"} id={ae} onClick={(e)=>state.data.setState({dokumenFile:{...state.data.state.dokumenFile,[e.target.id]:[],bol:false}})}></input>
+                                <input type="button" value={"Delete"} id={ae} onClick={(e)=>state.data.setState({dokumenFile:{...state.data.state.dokumenFile,[e.target.id]:{file:[],bol:false}}})}></input>
                                 <input type="button" value={"Download"} id={ae} onClick={(e)=>FileSaver(state.data.state.dokumenFile[e.target.id].file)}></input>
                                 <input type="button" value={"View"} id={ae}
                                     onClick={(e) => {
@@ -403,4 +546,4 @@ function CreateSkalaKecil(state) {
     )
 }
 
-export default CreateSkalaKecil;
+export default CreateSkalaBesar;

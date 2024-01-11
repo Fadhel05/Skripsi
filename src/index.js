@@ -2,19 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 // import App from './App';
-import Fd from './frontDesk/props';
+import Fd from './hehe-_-/props';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Fdx from './frontDesk/propseditSkalaKecil';
+import Fdx from './hehe-_-/propseditSkalaKecil';
+import Bangke from './hehe-_-/propsCreateSkalaBesar';
+import PropsEditSkalaBesar from './hehe-_-/propsEditSkalaBesar';
+import PropsListSkalaBesar from './hehe-_-/propsListSkalaBesar';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/list/permohonan/skala/besar/front-desk" element={<PropsListSkalaBesar />}></Route>
         <Route path="/edit/permohonan/skala/kecil/:id" element={<Fdx />}></Route>
         <Route path="/create/permohonan/skala/kecil" element={<Fd></Fd>}></Route>
-        
-        {/* <Route path='/edit/permohonan/skala/kecil'></Route> */}
+        <Route path="/create/permohonan/skala/besar" element={<Bangke></Bangke>}></Route>
+        <Route path="/edit/permohonan/skala/besar/:id" element={<PropsEditSkalaBesar></PropsEditSkalaBesar>}></Route>
       </Routes>
     </BrowserRouter>
   );

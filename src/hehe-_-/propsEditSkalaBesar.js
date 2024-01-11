@@ -1,76 +1,76 @@
 import React,{Fragment} from 'react';
-import CreateSkalaKecil from './component/createSkalaKecil';
 import { toHaveDisplayValue } from '@testing-library/jest-dom/matchers';
+import { useParams, useSearchParams } from "react-router-dom";
+import EditSkalaBesar from './component/editSkalaBesar';
 
-
-class Fd extends React.Component{
+class PropsEditSkalaBesar extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             
                 Permohonan:{
                     id_pegawai :1,
-                    sub_date:"2023-12-14",
-                    skala :"Kecil",
-                    status_permohonan:"sdfsa",
-                    posisi:"fd",
-                    readTrue:false
+                    sub_date:"",
+                    skala :"",
+                    status_permohonan:"",
+                    posisi:"",
+                    readTrue:undefined
 
                 },
-                Perusahaan: {
-                    nama_pelakuUsaha:"Fad",
-                    nama_pbphh :"nama_pbphh",
-                    kbli:"kbli",
-                    nib :"nib",
-                    npwp :"npwp",
-                    alamat_kantor:"alamat_kantor",
-                    alamat_usaha :"alamat Usaha",
-                    alamat_gudang :"alamat gudang",
-                    jenis_produk_kecil :["x","y","z","f","f"],
-                    daftar_mesin_kecil :["x","y","z","f","f"],
-                    sumber_bahan:"bahan",
-                    total_investasi: 1,
-                    status_permohonan :"test",
-                    jumlah_tenaga_kerja:1
+            Perusahaan: {
+                    id_perusahaan:0,
+                    nama_pelakuUsaha:"",
+                    nama_pbphh :"",
+                    kbli:"",
+                    nib :"",
+                    npwp :"",
+                    alamat_kantor:"",
+                    alamat_usaha :"",
+                    alamat_gudang :"",
+                    jenis_produk_kecil :[],
+                    daftar_mesin_kecil :[],
+                    sumber_bahan:"",
+                    total_investasi: null,
+                    status_permohonan :"",
+                    jumlah_tenaga_kerja:null
                 },
                 Dokumen: [
                     {
                         nama_dokumen :"surat_permohonan.pdf",
-                        tipe_dokumen :"Kecil",
+                        tipe_dokumen :"Besar",
                         dokumen_path :"surat_permohonan",
                         read_true: false,
                         note:"null"
                     },
                     {
                         nama_dokumen :"NIB.pdf",
-                        tipe_dokumen :"Kecil",
+                        tipe_dokumen :"Besar",
                         dokumen_path :"NIB",
                         read_true: false,
                         note:"null"
                     },
                     {
                         nama_dokumen :"dokumen_lingkungan.pdf",
-                        tipe_dokumen :"Kecil",
+                        tipe_dokumen :"Besar",
                         dokumen_path :"dokumen_lingkungan",
                         read_true: false,
                         note:"null"
                     },
                     {
                         nama_dokumen :"surat_pernyataan_pengelolaan.pdf",
-                        tipe_dokumen :"Kecil",
+                        tipe_dokumen :"Besar",
                         dokumen_path :"surat_pernyataan_pengelolaan",
                         read_true: false,
                         note:"null"
                     },
                     {
                         nama_dokumen :"pernyataan_oss.pdf",
-                        tipe_dokumen :"Kecil",
+                        tipe_dokumen :"Besar",
                         dokumen_path :"pernyataan_oss",
                         read_true: false,
                         note:"null"
                     }
             ],
-            file2: [],
             dokumenFile: {
                 a:{
                     file: "",
@@ -99,12 +99,13 @@ class Fd extends React.Component{
     render(){
     return(
         <Fragment>
-            <CreateSkalaKecil
+            <EditSkalaBesar
                 data={this}
-            ></CreateSkalaKecil>
+                param={this.props}
+            ></EditSkalaBesar>
             
         </Fragment>
     )
     }
 }
-export default Fd;
+export default PropsEditSkalaBesar;
