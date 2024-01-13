@@ -9,17 +9,29 @@ import Fdx from './hehe-_-/propseditSkalaKecil';
 import Bangke from './hehe-_-/propsCreateSkalaBesar';
 import PropsEditSkalaBesar from './hehe-_-/propsEditSkalaBesar';
 import PropsListSkalaBesar from './hehe-_-/propsListSkalaBesar';
+import { AuthProvider } from './hehe-_-/authzzz/auth';
+import { Dashboard } from './hehe-_-/component/dashboard';
+import Logins from './hehe-_-/propLogin';
+
+
+
 
 export default function App() {
   return (
     <BrowserRouter>
+      <AuthProvider>
       <Routes>
-        <Route path="/list/permohonan/skala/besar/front-desk" element={<PropsListSkalaBesar />}></Route>
+        
+        <Route path="/list/permohonan/skala/besar" element={<PropsListSkalaBesar />}></Route>
+        <Route path="/login" element={<Logins></Logins>}></Route>
+        <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
         <Route path="/edit/permohonan/skala/kecil/:id" element={<Fdx />}></Route>
         <Route path="/create/permohonan/skala/kecil" element={<Fd></Fd>}></Route>
         <Route path="/create/permohonan/skala/besar" element={<Bangke></Bangke>}></Route>
         <Route path="/edit/permohonan/skala/besar/:id" element={<PropsEditSkalaBesar></PropsEditSkalaBesar>}></Route>
-      </Routes>
+        
+        </Routes>
+        </AuthProvider>
     </BrowserRouter>
   );
 }

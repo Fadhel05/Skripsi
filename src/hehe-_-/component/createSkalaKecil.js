@@ -1,12 +1,15 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import FileSaver from "file-saver";
 import { Document } from "react-pdf";
+import { Auth } from "../authzzz/auth";
 import logo from "../../img/Untitled.png"
+import { useNavigate } from "react-router-dom";
 function CreateSkalaKecil(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
-    const [dokumenFile, setDokumenFile] = useState(["a","b","c","d","e"]);
+    const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
+    const navigate = useNavigate()
     async function haduh () {
         await axios.get('http://127.0.0.1:8000/test/').then((data) => {
             
@@ -16,7 +19,11 @@ function CreateSkalaKecil(state) {
         });
     }
     useEffect(() => {
+        if (window.localStorage.getItem("role") != "fd") {
+            navigate('/dashboard');
+        }
         haduh();
+        console.log("conte kecil", bagas.meneketehe);
     },[]) 
     
     async function najis(formData) {
@@ -106,9 +113,9 @@ function CreateSkalaKecil(state) {
             </div>
         );
     }
+    const bagas = useContext(Auth);
     return (
         <Fragment>
-            
             <form name="form">
 
                 <label for='namaPelakuUsaha'>Nama Pelaku Usaha</label>

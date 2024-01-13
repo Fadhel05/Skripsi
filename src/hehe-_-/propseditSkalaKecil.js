@@ -1,7 +1,7 @@
 import React,{Fragment} from 'react';
-import EditSkalaKecil from './component/editSkalaKecil';
 import { toHaveDisplayValue } from '@testing-library/jest-dom/matchers';
 import { useParams, useSearchParams } from "react-router-dom";
+import EditSkalaKecil from './component/editSkalaKecil';
 
 class Fdx extends React.Component{
     constructor(props) {

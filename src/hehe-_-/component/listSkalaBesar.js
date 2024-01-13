@@ -1,5 +1,6 @@
 import axios from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState,useContext } from "react";
+import { Auth } from "../authzzz/auth";
 
 
 
@@ -7,6 +8,7 @@ function ListSkalaBesar(state) {
     const [dataBang, setDataBang] = useState([]);
     const [babilah, setBabilah] = useState(false);
     const [page, setPage] = useState(0);
+    const jiing = useContext(Auth);
     async function getData(){
          await axios.get("http://127.0.0.1:8000/get/permohonan/skala/besar/fd/").then((data) => {
             // console.log(data.data)
@@ -17,12 +19,14 @@ function ListSkalaBesar(state) {
     }
     function deletes(){
         console.log("apasih jing")
+        window.localStorage.setItem("bgst", "babi");
+        jiing.setBabi("anjeeng");
+        jiing.funci();
     }
     useEffect(() => {
+        console.log("context", jiing);
+        getData();
         
-
-            getData();
-            // console.log("anjenglah", state.data.state, dataBang);
         
     }, [])
     function test() {
@@ -59,12 +63,12 @@ function ListSkalaBesar(state) {
             setBabilah(true);
         }
     }, [dataBang])
-    useEffect(() => {
-        console.log("log");
-    },[deletes])
+
     return (
         <Fragment>
-            {babilah?test():null}
+            {babilah ? test() : null}
+            {jiing.meneketehe}
+            <input type="button" onClick={()=>deletes()}></input>
         </Fragment>
     )
 }

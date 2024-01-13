@@ -1,12 +1,14 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect,useContext,createContext } from "react";
 import axios from "axios";
 import FileSaver from "file-saver";
-import { Document } from "react-pdf";
 import logo from "../../img/Untitled.png"
+import { Auth } from "../authzzz/auth";
+import { useNavigate } from "react-router-dom";
 function CreateSkalaBesar(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
+    const navigate = useNavigate();
     const [jenisProdukAsli, setJenisProdukAsli] = useState([]);
     const [daftarMesinAsli, setDaftarMesinAsli] = useState([]);
     async function haduh () {
@@ -16,7 +18,11 @@ function CreateSkalaBesar(state) {
         });
     }
     useEffect(() => {
+        if (window.localStorage.getItem("role") != "fd") {
+            navigate('/dashboard');
+        }
         haduh();
+
     },[]) 
 
     async function najis(formData) {
@@ -109,6 +115,7 @@ function CreateSkalaBesar(state) {
     return (
         <Fragment>
             
+            {/* <a href="http://localhost:3000/create/permohonan/skala/kecil">safsa</a> */}
             <form name="form">
 
                 <label for='namaPelakuUsaha'>Nama Pelaku Usaha</label>
@@ -538,9 +545,7 @@ function CreateSkalaBesar(state) {
             <input type="button" onClick={()=>viewpdf()} value={"Cancel"}></input>
                 <input type="button" onClick={duh2} value={"Save"}></input>
                 <br></br>
-            <iframe src="http://127.0.0.1:8000/test/" contentEditable={false} height="100%" width="500" ></iframe>
-            <iframe src="http://127.0.0.1:8000/see/dokumen/18surat_permohonan/" contentEditable={false} height="100%" width="500" ></iframe>
-            
+              
             </form>
         </Fragment>
     )
