@@ -8,6 +8,7 @@ import logo from "../../img/Untitled.png"
 
 function EditSkalaBesar(state) {
     const [id, setId] = useState();
+    const [halaman, setHalaman] = useState(0);
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
@@ -142,7 +143,7 @@ function EditSkalaBesar(state) {
         if (typeof (state.data.state.dokumenFile[ae].file) == "string") {
             return (
                 <div>
-            <iframe src={state.data.state.dokumenFile[ae].file} width="100%" height="100%"></iframe>
+            <embed src={state.data.state.dokumenFile[ae].file} width="100%" height="100%"></embed>
             <input type="button" onClick={() => {document.getElementById("dokumen"+ae).hidden=true }} value={"cancel"}></input>
             <input type="button" onClick={() => { }} value={"save"}></input>
             </div>
@@ -175,7 +176,9 @@ function EditSkalaBesar(state) {
         <Fragment>
             
             <form name="form">
+                <div hidden={halaman==0?false:true}>
 
+                
                 <label for='namaPelakuUsaha'>Nama Pelaku Usaha</label>
                 <input type='text' id="namaPelakuUsaha"
                     defaultValue={state.data.state.Perusahaan.nama_pelakuUsaha}
@@ -259,7 +262,11 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
-                ></input><br></br>
+                    ></input>
+                </div>
+                <div hidden={halaman==1?false:true}>
+
+                
                 <label for='alamatGudang'>Alamat Gudang</label>
                 <input type='text' id='alamatGudang'
                     defaultValue={state.data.state.Perusahaan.alamat_gudang}
@@ -582,6 +589,9 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }}></input><br></br>
+                </div>
+                <div hidden={halaman==2?false:true}>
+
                 
                 {   
                     dokumenFile.map((ae, i) => {
@@ -641,7 +651,16 @@ function EditSkalaBesar(state) {
             <input type="button" onClick={duh} value={"Cancel"}></input>
                 <input type="button" onClick={duh2} value={"Save"}></input>
                 <br></br>
-            <iframe src="http://127.0.0.1:8000/see/dokumen/18surat_permohonan/" contentEditable={false} height="100%" width="500" ></iframe>
+            <embed src="http://127.0.0.1:8000/see/dokumen/18surat_permohonan/" contentEditable={false} height="100%" width="500" ></embed>
+                </div>
+            <input type="button" onClick={() => {
+                    setHalaman(halaman - 1);
+                }} value={"Prev"}
+                    hidden={halaman==0?true:false}
+                ></input>
+                <input type="button" onClick={() => {
+                    setHalaman(halaman+1);
+                    }} value={"Next"} hidden={halaman==2?true:false}></input>
             </form>
         </Fragment>
     )

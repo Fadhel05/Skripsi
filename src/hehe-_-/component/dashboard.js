@@ -8,16 +8,17 @@ export function Dashboard() {
     const role = window.localStorage.getItem("role");
     const navigate = useNavigate();
     useEffect(() => {
-        console.log("role", role); 
+        if (role == null) {
+            navigate('/login');
+        } 
     },[])
     return (
         <Fragment>
-            <a href="http://localhost:3000/dashboard"></a>
             <input onClick={() => {
                 navigate('/list/permohonan/skala/besar');
             }} value={'Skala Besar'}></input>
             <input onClick={() => {
-                navigate('/list/permohonan/skala/Kecil');
+                navigate('/list/permohonan/skala/kecil');
             }} value={'Skala Kecil'}></input>
             <input onClick={() => {
                 navigate('');

@@ -9,6 +9,7 @@ function CreateSkalaKecil(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
+    const [halaman, setHalaman] = useState(1);
     const navigate = useNavigate()
     async function haduh () {
         await axios.get('http://127.0.0.1:8000/test/').then((data) => {
@@ -118,6 +119,9 @@ function CreateSkalaKecil(state) {
         <Fragment>
             <form name="form">
 
+                
+
+                <div hidden={halaman==1?false:true}>
                 <label for='namaPelakuUsaha'>Nama Pelaku Usaha</label>
                 <input type='text' id="namaPelakuUsaha"
                     onChange={(e) => {
@@ -206,7 +210,8 @@ function CreateSkalaKecil(state) {
                         })
                     }} 
                     
-                ></input><br></br>
+                ></input>
+                <br></br>
                 <label for='jenisPengelolahan'>Jenis Pengelolahan</label>
                 <input type='text' id='jenisPengelolahan'
                     onChange={(e) => {
@@ -217,7 +222,40 @@ function CreateSkalaKecil(state) {
                         p[0] = e.target.value;
                         setJenisProduk(p);
                     }} 
-                ></input><br></br>
+                ></input>
+                
+                </div>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+
+                <div hidden={halaman==2?false:true}>
                 <label for='ragamProduk'>Ragam Produk</label>
                 <input type='text' id='ragamProduk'
                     onChange={(e) => {
@@ -302,7 +340,32 @@ function CreateSkalaKecil(state) {
                         p[4] = e.target.value;
                         setDaftarMesin(p);
                     }}
-                ></input><br></br>
+                ></input>
+                
+                </div>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <div hidden={halaman==3?false:true}>
                 <label for='sumber'>Sumber Bahan Baku</label>
                 <input type='text' id='sumber'
                     onChange={(e) => {
@@ -400,10 +463,13 @@ function CreateSkalaKecil(state) {
                 <input type="button" onClick={submit} value={"Submit"}></input>
             <input type="button" onClick={()=>viewpdf()} value={"Cancel"}></input>
                 <input type="button" onClick={duh2} value={"Save"}></input>
-                <br></br>
-            <iframe src="http://127.0.0.1:8000/test/" contentEditable={false} height="100%" width="500" ></iframe>
-            <iframe src="http://127.0.0.1:8000/see/dokumen/18surat_permohonan/" contentEditable={false} height="100%" width="500" ></iframe>
-            
+                </div>
+                <input type="button" hidden={halaman == 1 ? true : false} onClick={() => {
+                    setHalaman(halaman - 1);
+                }} value={"Prev"}></input>
+                <input type="button" hidden={halaman == 3 ? true : false} onClick={() => {
+                    setHalaman(halaman + 1);
+            }} value={"Next"}></input>
             </form>
         </Fragment>
     )

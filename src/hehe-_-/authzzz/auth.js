@@ -11,12 +11,18 @@ export const Auth = createContext();
 export const AuthProvider = ({children}) => {
     const [meneketehe, setBabi] = useState();
     const navigate = useNavigate();
-    function authLogin(cred) {
+    function authLogin(cred,crid) {
         axios.post('http://127.0.0.1:8000/login', {
-            "username": cred.data.state.username,
-            "password": cred.data.state.password}).then((res) => {
-                window.localStorage.setItem("role", res.data.data);
-                // console.log(res.data.data);
+            "username": crid.username,
+            "password": crid.password
+        }).then((res) => {
+            console.log(res);
+            window.localStorage.setItem("role", res.data.data);
+             if (res.data.data!=false) {
+                navigate('/dashboard');
+            } else {
+                
+            }
         })
 
     }

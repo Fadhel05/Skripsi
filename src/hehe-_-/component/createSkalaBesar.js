@@ -7,10 +7,12 @@ import { useNavigate } from "react-router-dom";
 function CreateSkalaBesar(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
+    const [halaman, setHalaman] = useState(0);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
     const navigate = useNavigate();
     const [jenisProdukAsli, setJenisProdukAsli] = useState([]);
     const [daftarMesinAsli, setDaftarMesinAsli] = useState([]);
+    const role = window.localStorage.getItem("role");
     async function haduh () {
         await axios.get('http://127.0.0.1:8000/test/').then((data) => {
         }
@@ -18,7 +20,9 @@ function CreateSkalaBesar(state) {
         });
     }
     useEffect(() => {
-        if (window.localStorage.getItem("role") != "fd") {
+        if (role == null) {
+            navigate('/login')
+        }else if (role != "fd") {
             navigate('/dashboard');
         }
         haduh();
@@ -115,9 +119,11 @@ function CreateSkalaBesar(state) {
     return (
         <Fragment>
             
-            {/* <a href="http://localhost:3000/create/permohonan/skala/kecil">safsa</a> */}
+           
             <form name="form">
+                <div hidden={halaman==0?false:true}>
 
+               
                 <label for='namaPelakuUsaha'>Nama Pelaku Usaha</label>
                 <input type='text' id="namaPelakuUsaha"
                     onChange={(e) => {
@@ -194,7 +200,12 @@ function CreateSkalaBesar(state) {
                             }
                         })
                     }} 
-                ></input><br></br>
+                    ></input>
+                    
+                </div>
+                <div hidden={halaman==1?false:true}>
+
+                
                 <label for='alamatGudang'>Alamat Gudang</label>
                 <input type='text' id='alamatGudang'
                     onChange={(e) => {
@@ -208,6 +219,7 @@ function CreateSkalaBesar(state) {
                     
                 ></input><br></br>
 
+                
                 <input type="button"
                     onClick={() => {
                         document.getElementById("anjenglah").hidden = false;
@@ -249,8 +261,6 @@ function CreateSkalaBesar(state) {
                         </tr>);
                     })}
                 </table>
-
-
 
                 <br></br>
                 <div id="anjenglah" hidden={true}>
@@ -337,7 +347,7 @@ function CreateSkalaBesar(state) {
                     ></input>
                 </div>
 
-        <input type="button"
+                    <input type="button"
                             onClick={() => {
                                 document.getElementById("anjinglah").hidden = false;
                             }}
@@ -487,7 +497,11 @@ function CreateSkalaBesar(state) {
                                 jumlah_tenaga_kerja:Number(e.target.value)
                             }
                         })
-                    }}></input><br></br>
+                        }}></input>
+                </div>
+                <div hidden={halaman==2?false:true}>
+
+               
                 
                 {   
                     dokumenFile.map((ae, i) => {
@@ -543,9 +557,17 @@ function CreateSkalaBesar(state) {
                 {/* {viewpdf()};   */}
                 <input type="button" onClick={submit} value={"Submit"}></input>
             <input type="button" onClick={()=>viewpdf()} value={"Cancel"}></input>
-                <input type="button" onClick={duh2} value={"Save"}></input>
-                <br></br>
-              
+                    <input type="button" onClick={duh2} value={"Save"}></input>
+                </div>
+                <input type="button" onClick={() => {
+                    setHalaman(halaman - 1);
+                }} value={"Prev"}
+                    hidden={halaman==0?true:false}
+                ></input>
+                <input type="button" onClick={() => {
+                    setHalaman(halaman+1);
+                    }} value={"Next"} hidden={halaman==2?true:false}></input>
+                
             </form>
         </Fragment>
     )

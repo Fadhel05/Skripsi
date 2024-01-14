@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
-function ListSkalaBesar(state) {
+function ListSkalaKecil(state) {
     const [dataBang, setDataBang] = useState([]);
     const [babilah, setBabilah] = useState(false);
     const [page, setPage] = useState(0);
@@ -13,7 +13,7 @@ function ListSkalaBesar(state) {
     const Navigate = useNavigate();
     const role = window.localStorage.getItem("role");
     async function getData(){
-         await axios.get("http://127.0.0.1:8000/get/permohonan/skala/besar/"+role+"/").then((data) => {
+         await axios.get("http://127.0.0.1:8000/get/permohonan/skala/kecil/"+role+"/").then((data) => {
             
             setLength(data.data.length-1);
             setDataBang(data.data);
@@ -34,9 +34,7 @@ function ListSkalaBesar(state) {
     function test() {
         return (
             <Fragment>
-                
-
-                {dataBang.length==0?null:dataBang[page].map((e) => {
+                {dataBang[page].map((e) => {
                     console.log(e);
                     return (
                         <tr>
@@ -89,4 +87,4 @@ function ListSkalaBesar(state) {
     )
 }
 
-export default ListSkalaBesar;
+export default ListSkalaKecil;

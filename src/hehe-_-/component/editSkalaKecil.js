@@ -8,9 +8,11 @@ import logo from "../../img/Untitled.png"
 
 function EditSkalaKecil(state) {
     const [id, setId] = useState();
+    const [halaman,setHalaman] = useState(0);
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
-    const [dokumenFile, setDokumenFile] = useState(["a","b","c","d","e"]);
+    const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
+    const [hidden, setHidden] = useState(false);
     async function haduh (ehem) {
         console.log(ehem);
         await axios.put('http://127.0.0.1:8000/edit/permohonan/skala/kecil/' + ehem + "/").then((data) => {
@@ -62,6 +64,9 @@ function EditSkalaKecil(state) {
         // console.log("database",state.data.state);
     }
     useEffect(() => {
+        if (window.localStorage.getItem("role") != "fd") {
+            setHidden(true);
+        }
         setId(window.location.pathname.split("/")[5]);
         haduh(window.location.pathname.split("/")[5]);
     },[]) 
@@ -172,7 +177,9 @@ function EditSkalaKecil(state) {
         <Fragment>
             
             <form name="form">
+                <div hidden={halaman==0?false:true}>
 
+               
                 <label for='namaPelakuUsaha'>Nama Pelaku Usaha</label>
                 <input type='text' id="namaPelakuUsaha"
                     defaultValue={state.data.state.Perusahaan.nama_pelakuUsaha}
@@ -183,7 +190,9 @@ function EditSkalaKecil(state) {
                                 nama_pelakuUsaha:e.target.value
                             }
                         })
-                    }} ></input>
+                    }}
+                    disabled={hidden}
+                ></input>
                 <br></br>
                 <label for='namaPBPHH'>Nama PBPHH</label>
                 <input type='text' id='namaPBPHH'
@@ -195,7 +204,8 @@ function EditSkalaKecil(state) {
                                 nama_pbphh:e.target.value
                             }
                         })
-                    }} 
+                    }}
+                    disabled={hidden}
                 ></input><br></br>
                 <label for='KBLI'>KBLI</label>
                 <input type='text' id='KBLI'
@@ -207,7 +217,8 @@ function EditSkalaKecil(state) {
                                     kbli:e.target.value
                                 }
                             })
-                        }} 
+                        }}
+                    disabled={hidden} 
                 ></input><br></br>
                 <label for='NIB'>NIB</label>
                 <input type='text' id='NIB'
@@ -219,7 +230,8 @@ function EditSkalaKecil(state) {
                                 nib:e.target.value
                             }
                         })
-                    }} 
+                    }}
+                    disabled={hidden} 
                 ></input><br></br>
                 <label for='NPWP'>NPWP</label>
                 <input type='text' id='NPWP'
@@ -243,7 +255,8 @@ function EditSkalaKecil(state) {
                                 alamat_kantor:e.target.value
                             }
                         })
-                    }} 
+                    }}
+                    disabled={hidden} 
                 ></input><br></br>
                 <label for='aLamatUsaha'>ALamat Usaha</label>
                 <input type='text' id='aLamatUsaha'
@@ -256,7 +269,31 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }} 
-                ></input><br></br>
+                    disabled={hidden} 
+                    ></input>
+                </div>
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div hidden={halaman==1?false:true}>
+
+                
                 <label for='alamatGudang'>Alamat Gudang</label>
                 <input type='text' id='alamatGudang'
                     defaultValue={state.data.state.Perusahaan.alamat_gudang}
@@ -267,8 +304,8 @@ function EditSkalaKecil(state) {
                                 alamat_gudang:e.target.value
                             }
                         })
-                    }} 
-                    
+                    }}
+                    disabled={hidden} 
                 ></input><br></br>
                 <label for='jenisPengelolahan'>Jenis Pengelolahan</label>
                 <input type='text' id='jenisPengelolahan'
@@ -294,6 +331,7 @@ function EditSkalaKecil(state) {
                         p[1] = e.target.value;
                         setJenisProduk(p);
                     }}
+                    disabled={hidden} 
                 ></input><br></br>
                 <label for='KBLI2'>KBLI</label>
                 <input type='text' id='KBLI2'
@@ -306,6 +344,7 @@ function EditSkalaKecil(state) {
                         p[2] = e.target.value;
                         setJenisProduk(p);
                     }}
+                    disabled={hidden} 
                 ></input><br></br>
                 <label for='kapasitasIzinProduksi'>Kapasitas Izin Produksi</label>
                 <input type='text' id='kapasitasIzinProduksi'
@@ -318,6 +357,7 @@ function EditSkalaKecil(state) {
                         p[3] = e.target.value;
                         setJenisProduk(p);
                     }}
+                    disabled={hidden} 
                 ></input><br></br>
                 <label for='keterangan'>Keterangan</label>
                 <input type='text' id='keterangan'
@@ -330,6 +370,7 @@ function EditSkalaKecil(state) {
                         p[4] = e.target.value;
                         setJenisProduk(p);
                     }}
+                    disabled={hidden} 
                 ></input><br></br>
                 <label for='jenisMesin'>Jenis Mesin</label>
                 <input type='text' id='jenisMesin'
@@ -339,7 +380,30 @@ function EditSkalaKecil(state) {
                         p[0] = e.target.value;
                         setDaftarMesin(p);
                     }}
-                ></input><br></br>
+                    ></input>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div hidden={halaman==2?false:true}>
                 <label for='spesifikasi'>Spesifikasi / Merk / Negara</label>
                 <input type='text' id='spesifikasi'
                     defaultValue={daftarMesin[1]}
@@ -409,7 +473,12 @@ function EditSkalaKecil(state) {
                                 status_permohonan:e.target.value
                             }
                         })
-                    }}></input><br></br>
+                        }}></input>
+                    
+                </div>
+                <div hidden={halaman==3?false:true}>
+
+                
                 <label for='jumlahTenagaKerja'>Jumlah Tenaga Kerja</label>
                 <input type='text' id='jumlahTenagaKerja'
                     defaultValue={state.data.state.Perusahaan.jumlah_tenaga_kerja}
@@ -481,6 +550,15 @@ function EditSkalaKecil(state) {
                 <input type="button" onClick={duh2} value={"Save"}></input>
                 <br></br>
             <iframe src="http://127.0.0.1:8000/see/dokumen/18surat_permohonan/" contentEditable={false} height="100%" width="500" ></iframe>
+            </div>
+            <input type="button" onClick={() => {
+                    setHalaman(halaman - 1);
+                }} value={"Prev"}
+                    hidden={halaman==0?true:false}
+                ></input>
+                <input type="button" onClick={() => {
+                    setHalaman(halaman+1);
+                    }} value={"Next"} hidden={halaman==3?true:false}></input>
             </form>
         </Fragment>
     )

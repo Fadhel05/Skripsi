@@ -12,6 +12,7 @@ import PropsListSkalaBesar from './hehe-_-/propsListSkalaBesar';
 import { AuthProvider } from './hehe-_-/authzzz/auth';
 import { Dashboard } from './hehe-_-/component/dashboard';
 import Logins from './hehe-_-/propLogin';
+import PropsListSkalaKecil from './hehe-_-/propsLisSkalaKecil';
 
 
 
@@ -21,15 +22,14 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
       <Routes>
-        
-        <Route path="/list/permohonan/skala/besar" element={<PropsListSkalaBesar />}></Route>
+        <Route path="/list/permohonan/skala/besar" element={<PropsListSkalaBesar />}></Route>  
+        <Route path="/list/permohonan/skala/kecil" element={<PropsListSkalaKecil />}></Route>
         <Route path="/login" element={<Logins></Logins>}></Route>
         <Route path="/dashboard" element={<Dashboard></Dashboard>}></Route>
         <Route path="/edit/permohonan/skala/kecil/:id" element={<Fdx />}></Route>
         <Route path="/create/permohonan/skala/kecil" element={<Fd></Fd>}></Route>
         <Route path="/create/permohonan/skala/besar" element={<Bangke></Bangke>}></Route>
         <Route path="/edit/permohonan/skala/besar/:id" element={<PropsEditSkalaBesar></PropsEditSkalaBesar>}></Route>
-        
         </Routes>
         </AuthProvider>
     </BrowserRouter>
