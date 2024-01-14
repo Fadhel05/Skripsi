@@ -9,6 +9,7 @@ function CreateSkalaKecil(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
+    const role = useContext(Auth).token;
     const [halaman, setHalaman] = useState(1);
     const navigate = useNavigate()
     async function haduh () {
@@ -20,7 +21,9 @@ function CreateSkalaKecil(state) {
         });
     }
     useEffect(() => {
-        if (window.localStorage.getItem("role") != "fd") {
+        if (role == null) {
+            navigate('/login')
+        }else if (role != "fd") {
             navigate('/dashboard');
         }
         haduh();
@@ -73,6 +76,7 @@ function CreateSkalaKecil(state) {
         for (let adohhh in state.data.state.dokumenFile) {
             if (state.data.state.dokumenFile[adohhh].bol) {
                 form.Dokumen[shit[adohhh]].read_true = true;
+                form.Dokumen[shit[adohhh]].note = state.data.state.dokumenFile[adohhh].note;
             }
         }
         let idx;
@@ -109,8 +113,12 @@ function CreateSkalaKecil(state) {
         return (
             <div>
             <iframe src={url} width="100%" height="100%"></iframe>
+                <input type="text" defaultValue={state.data.state.dokumenFile[ae].note} id={ae+"_chat"}></input>
             <input type="button" onClick={() => {document.getElementById("dokumen"+ae).hidden=true }} value={"cancel"}></input>
-            <input type="button" onClick={() => { }} value={"save"}></input>
+                <input type="button" onClick={() => {
+                    document.getElementById("dokumen" + ae).hidden = true;
+                    state.data.setState({ dokumenFile: { ...state.data.state.dokumenFile, [ae]: { ...state.data.state.dokumenFile[ae],note:document.getElementById(ae+"_chat").value } } });
+            }} value={"save"}></input>
             </div>
         );
     }
@@ -119,7 +127,17 @@ function CreateSkalaKecil(state) {
         <Fragment>
             <form name="form">
 
-                
+                <input onClick={() => {
+                        navigate('/list/permohonan/skala/besar');
+                    }} value={'Skala Besar'}></input>
+                    <input onClick={() => {
+                        navigate('/list/permohonan/skala/kecil');
+                    }} value={'Skala Kecil'}></input>
+                    <input onClick={() => {
+                        navigate('');
+                    }} value={'Cetak Pertek'}
+                        hidden={role=="fd"?false:true}
+                    ></input>
 
                 <div hidden={halaman==1?false:true}>
                 <label for='namaPelakuUsaha'>Nama Pelaku Usaha</label>
@@ -225,36 +243,6 @@ function CreateSkalaKecil(state) {
                 ></input>
                 
                 </div>
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-
                 <div hidden={halaman==2?false:true}>
                 <label for='ragamProduk'>Ragam Produk</label>
                 <input type='text' id='ragamProduk'
@@ -343,28 +331,6 @@ function CreateSkalaKecil(state) {
                 ></input>
                 
                 </div>
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
                 <div hidden={halaman==3?false:true}>
                 <label for='sumber'>Sumber Bahan Baku</label>
                 <input type='text' id='sumber'

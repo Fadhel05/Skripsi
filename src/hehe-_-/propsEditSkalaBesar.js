@@ -74,23 +74,28 @@ class PropsEditSkalaBesar extends React.Component{
             dokumenFile: {
                 a:{
                     file: "",
-                    bol:false
+                    bol: false,
+                    note:""
                 },
                 b: {
                     file:"",
-                    bol:false
+                    bol:false,
+                    note:""
                 },
                 c: {
                     file:"",
-                    bol:false
+                    bol:false,
+                    note:""
                 },
                 d: {
                     file:"",
-                    bol:false
+                    bol:false,
+                    note:""
                 },
                 e: {
                     file:"",
-                    bol:false
+                    bol:false,
+                    note:""
                 }
             }
         }

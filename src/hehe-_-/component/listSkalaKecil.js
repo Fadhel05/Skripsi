@@ -11,10 +11,10 @@ function ListSkalaKecil(state) {
     const [page, setPage] = useState(0);
     const [length, setLength] = useState(0);
     const Navigate = useNavigate();
-    const role = window.localStorage.getItem("role");
+    const role = useContext(Auth).token;
     async function getData(){
          await axios.get("http://127.0.0.1:8000/get/permohonan/skala/kecil/"+role+"/").then((data) => {
-            
+            console.log(data.data)
             setLength(data.data.length-1);
             setDataBang(data.data);
             state.data.setState({data:data.data});
@@ -38,7 +38,7 @@ function ListSkalaKecil(state) {
                     console.log(e);
                     return (
                         <tr>
-                            <td>{e["perusahaan"]["nib"]}</td>
+                            <td> <a href={"http://localhost:3000/edit/permohonan/skala/kecil/"+e["id_request"]}>{e["perusahaan"]["nib"]}</a></td>
                             <td>{e["perusahaan"]["nama_pbphh"]}</td>
                             <td>
                                 <input type="button" value={"Edit"} />
@@ -59,8 +59,21 @@ function ListSkalaKecil(state) {
 
     return (
         <Fragment>
+            <input onClick={() => {
+                Navigate('/list/permohonan/skala/besar');
+            }} value={'Skala Besar'}></input>
+            <input onClick={() => {
+                Navigate('/list/permohonan/skala/kecil');
+            }} value={'Skala Kecil'}></input>
+            <input onClick={() => {
+                Navigate('');
+            }} value={'Cetak Pertek'}
+                hidden={role=="fd"?false:true}
+            ></input>
                         <div>
-                <input type="button" value={"Create"}></input>
+                <input type="button" onClick={() => {
+                    Navigate('/create/permohonan/skala/kecil')
+                }} value={"Create"}></input>
             <table>
                 <tr>
                     <th>NIB</th>
@@ -81,7 +94,7 @@ function ListSkalaKecil(state) {
             <input type="button" value={"Next"} onClick={() => {
                 setPage(page + 1)
             }}
-                hidden={page==length?true:false}
+                hidden={length<0?true:page==length?true:false}
             ></input>
         </Fragment>
     )

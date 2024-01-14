@@ -1,9 +1,10 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import FileSaver from "file-saver";
 import { Document } from "react-pdf";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import logo from "../../img/Untitled.png"
+import { Auth } from "../authzzz/auth";
 
 
 function EditSkalaBesar(state) {
@@ -14,6 +15,8 @@ function EditSkalaBesar(state) {
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
     const [jenisProdukAsli, setJenisProdukAsli] = useState([]);
     const [daftarMesinAsli, setDaftarMesinAsli] = useState([]);
+    const role = useContext(Auth).token;
+    const navigate = useNavigate();
     async function haduh (ehem) {
         console.log(ehem);
         await axios.put('http://127.0.0.1:8000/edit/permohonan/skala/besar/' + ehem + "/").then((data) => {
@@ -38,23 +41,28 @@ function EditSkalaBesar(state) {
                 dokumenFile: {
                     a: {
                         file: data.data.dokumen[0].read_true ? "http://127.0.0.1:8000/see/dokumen/"+data.data.id_request+"surat_permohonan"+"/" : 0,
-                        bol : data.data.dokumen[0].read_true ? true : false
+                        bol : data.data.dokumen[0].read_true ? true : false,
+                        note: data.data.dokumen[0].note ?data.data.dokumen[0].note: ""
                     },
                     b: {
                         file: data.data.dokumen[1].read_true ? "http://127.0.0.1:8000/see/dokumen/"+data.data.id_request+"NIB"+"/" : 0,
-                        bol : data.data.dokumen[1].read_true ? true : false
+                        bol : data.data.dokumen[1].read_true ? true : false,
+                        note:data.data.dokumen[1].note ?data.data.dokumen[1].note: ""
                     },
                     c: {
                         file: data.data.dokumen[2].read_true ? "http://127.0.0.1:8000/see/dokumen/"+data.data.id_request+"dokumen_lingkungan"+"/" : 0,
-                        bol : data.data.dokumen[2].read_true ? true : false
+                        bol : data.data.dokumen[2].read_true ? true : false,
+                        note:data.data.dokumen[2].note ?data.data.dokumen[2].note: ""
                     },
                     d: {
                         file: data.data.dokumen[3].read_true ? "http://127.0.0.1:8000/see/dokumen/"+data.data.id_request+"surat_pernyataan_pengelolaan"+"/" :0,
-                        bol : data.data.dokumen[3].read_true ? true : false
+                        bol : data.data.dokumen[3].read_true ? true : false,
+                        note:data.data.dokumen[3].note ?data.data.dokumen[3].note: ""
                     },
                     e: {
                         file: data.data.dokumen[4].read_true ? "http://127.0.0.1:8000/see/dokumen/"+data.data.id_request+"pernyataan_oss"+"/" : 0,
-                        bol : data.data.dokumen[4].read_true ? true : false
+                        bol : data.data.dokumen[4].read_true ? true : false,
+                        note:data.data.dokumen[4].note ?data.data.dokumen[4].note: ""
                     }
                     
                 }
@@ -66,6 +74,9 @@ function EditSkalaBesar(state) {
         // console.log("database",state.data.state);
     }
     useEffect(() => {
+        if (role == null) {
+            navigate('/login')
+        }
         setId(window.location.pathname.split("/")[5]);
         haduh(window.location.pathname.split("/")[5]);
     },[]) 
@@ -114,8 +125,10 @@ function EditSkalaBesar(state) {
         for (let adohhh in state.data.state.dokumenFile) {
             if (state.data.state.dokumenFile[adohhh].bol) {
                 form.Dokumen[shit[adohhh]].read_true = true;
+                form.Dokumen[shit[adohhh]].note = state.data.state.dokumenFile[adohhh].note?state.data.state.dokumenFile[adohhh].note:"";
             } else {
                 form.Dokumen[shit[adohhh]].read_true = false;
+                form.Dokumen[shit[adohhh]].note = "";
             }
         }
         let idx;
@@ -144,8 +157,15 @@ function EditSkalaBesar(state) {
             return (
                 <div>
             <embed src={state.data.state.dokumenFile[ae].file} width="100%" height="100%"></embed>
+                <input type="text" defaultValue={state.data.state.dokumenFile[ae].note?state.data.state.dokumenFile[ae].note:""} id={ae+"_chat"}></input>
             <input type="button" onClick={() => {document.getElementById("dokumen"+ae).hidden=true }} value={"cancel"}></input>
-            <input type="button" onClick={() => { }} value={"save"}></input>
+                <input type="button" onClick={() => {
+                    document.getElementById("dokumen" + ae).hidden = true;
+                    state.data.setState({ dokumenFile: { ...state.data.state.dokumenFile, [ae]: { ...state.data.state.dokumenFile[ae],note:document.getElementById(ae+"_chat").value } } });
+            }} value={"save"}></input>
+
+
+
             </div>
             )
         }
@@ -153,9 +173,13 @@ function EditSkalaBesar(state) {
 
         return (
             <div>
-            <iframe src={url} width="100%" height="100%"></iframe>
+                <iframe src={url} width="100%" height="100%"></iframe>
+                <input type="text" id={ae+"_chat"}></input>
             <input type="button" onClick={() => {document.getElementById("dokumen"+ae).hidden=true }} value={"cancel"}></input>
-            <input type="button" onClick={() => { }} value={"save"}></input>
+                <input type="button" onClick={() => {
+                    document.getElementById("dokumen" + ae).hidden = true;
+                    state.data.setState({ dokumenFile: { ...state.data.state.dokumenFile, [ae]: { ...state.data.state.dokumenFile[ae],note:document.getElementById(ae+"_chat").value } } });
+            }} value={"save"}></input>
             </div>
         );
     }
@@ -176,6 +200,17 @@ function EditSkalaBesar(state) {
         <Fragment>
             
             <form name="form">
+            <input onClick={() => {
+                navigate('/list/permohonan/skala/besar');
+            }} value={'Skala Besar'}></input>
+            <input onClick={() => {
+                navigate('/list/permohonan/skala/kecil');
+            }} value={'Skala Kecil'}></input>
+            <input onClick={() => {
+                navigate('');
+            }} value={'Cetak Pertek'}
+                hidden={role=="fd"?false:true}
+            ></input>
                 <div hidden={halaman==0?false:true}>
 
                 
@@ -189,7 +224,9 @@ function EditSkalaBesar(state) {
                                 nama_pelakuUsaha:e.target.value
                             }
                         })
-                    }} ></input>
+                        }}
+                    disabled={role=="fd"?false:true}
+                    ></input>
                 <br></br>
                 <label for='namaPBPHH'>Nama PBPHH</label>
                 <input type='text' id='namaPBPHH'
@@ -202,6 +239,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
+                    disabled={role=="fd"?false:true}
                 ></input><br></br>
                 <label for='KBLI'>KBLI</label>
                 <input type='text' id='KBLI'
@@ -214,6 +252,7 @@ function EditSkalaBesar(state) {
                                 }
                             })
                         }} 
+                    disabled={role=="fd"?false:true}
                 ></input><br></br>
                 <label for='NIB'>NIB</label>
                 <input type='text' id='NIB'
@@ -226,6 +265,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
+                    disabled={role=="fd"?false:true}
                 ></input><br></br>
                 <label for='NPWP'>NPWP</label>
                 <input type='text' id='NPWP'
@@ -238,6 +278,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
+                    disabled={role=="fd"?false:true}
                 ></input><br></br>
                 <label for='alamatKantor'>Alamat Kantor</label>
                 <input type='text' id='alamatKantor'
@@ -250,6 +291,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
+                    disabled={role=="fd"?false:true}
                 ></input><br></br>
                 <label for='aLamatUsaha'>ALamat Usaha</label>
                 <input type='text' id='aLamatUsaha'
@@ -262,6 +304,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
+                    disabled={role=="fd"?false:true}
                     ></input>
                 </div>
                 <div hidden={halaman==1?false:true}>
@@ -278,6 +321,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
+                    disabled={role=="fd"?false:true}
                     
                 ></input><br></br>
                 
@@ -289,6 +333,7 @@ function EditSkalaBesar(state) {
                         document.getElementById("anjenglah").hidden = false;
                     }}
                     value={"Add"}
+                    disabled={role=="fd"?false:true}
                 ></input><br></br>
                 <table>
                 <tr>
@@ -320,7 +365,7 @@ function EditSkalaBesar(state) {
                                     })
                                     
                                     setJenisProdukAsli(shit);
-                                }}
+                                }}disabled={role=="fd"?false:true}
                             ></input></td>
                         </tr>);
                     })}
@@ -413,29 +458,12 @@ function EditSkalaBesar(state) {
                     ></input>
                 </div>
 
-
-
-
-
-
-
-
-
-
-                
-
-
-
-
-
-
-
-
         <input type="button"
                             onClick={() => {
                                 document.getElementById("anjinglah").hidden = false;
                             }}
                             value={"Add"}
+                    disabled={role=="fd"?false:true}
                         ></input><br></br>
                         <table>
                         <tr>
@@ -467,7 +495,7 @@ function EditSkalaBesar(state) {
                                             })
                                             
                                             setDaftarMesinAsli(shit);
-                                        }}
+                                        }}disabled={role=="fd"?false:true}
                                     ></input></td>
                                 </tr>);
                             })}
@@ -555,6 +583,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }}
+                    disabled={role=="fd"?false:true}
                 ></input><br></br>
                 <label for='totalInvestasi'>Total Investasi</label>
                 <input type='text' id='totalInvestasi'
@@ -566,7 +595,8 @@ function EditSkalaBesar(state) {
                                 total_investasi:Number(e.target.value)
                             }
                         })
-                    }}></input><br></br>
+                    }}
+                    disabled={role=="fd"?false:true}></input><br></br>
                 <label for='statusPenanamanModal'>Status Penanaman Modal</label>
                 <input type='text' id='statusPenanamanModal'
                     defaultValue={state.data.state.Perusahaan.status_permohonan}
@@ -577,7 +607,8 @@ function EditSkalaBesar(state) {
                                 status_permohonan:e.target.value
                             }
                         })
-                    }}></input><br></br>
+                    }}
+                    disabled={role=="fd"?false:true}></input><br></br>
                 <label for='jumlahTenagaKerja'>Jumlah Tenaga Kerja</label>
                 <input type='text' id='jumlahTenagaKerja'
                     defaultValue={state.data.state.Perusahaan.jumlah_tenaga_kerja}
@@ -588,7 +619,8 @@ function EditSkalaBesar(state) {
                                 jumlah_tenaga_kerja:Number(e.target.value)
                             }
                         })
-                    }}></input><br></br>
+                    }}
+                    disabled={role=="fd"?false:true}></input><br></br>
                 </div>
                 <div hidden={halaman==2?false:true}>
 
@@ -643,9 +675,6 @@ function EditSkalaBesar(state) {
                 {/* {
                     filex()
                 } */}
-                <input type="file" onChange={(e) => {
-                    state.data.setState({file2:e.target.files[0]})
-                }}></input>
             
             <input type="button" onClick={submit} value={"Submit"}></input>
             <input type="button" onClick={duh} value={"Cancel"}></input>

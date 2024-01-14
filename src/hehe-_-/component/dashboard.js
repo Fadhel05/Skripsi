@@ -1,11 +1,12 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Auth } from "../authzzz/auth";
 
 
 
 
 export function Dashboard() {
-    const role = window.localStorage.getItem("role");
+    const role = useContext(Auth).token;
     const navigate = useNavigate();
     useEffect(() => {
         if (role == null) {

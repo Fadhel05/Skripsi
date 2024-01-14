@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect,useContext,createContext } from "react";
+import { Fragment, useState, useEffect,useContext } from "react";
 import axios from "axios";
 import FileSaver from "file-saver";
 import logo from "../../img/Untitled.png"
@@ -12,7 +12,7 @@ function CreateSkalaBesar(state) {
     const navigate = useNavigate();
     const [jenisProdukAsli, setJenisProdukAsli] = useState([]);
     const [daftarMesinAsli, setDaftarMesinAsli] = useState([]);
-    const role = window.localStorage.getItem("role");
+    const role = useContext(Auth).token;
     async function haduh () {
         await axios.get('http://127.0.0.1:8000/test/').then((data) => {
         }
@@ -75,6 +75,7 @@ function CreateSkalaBesar(state) {
         for (let adohhh in state.data.state.dokumenFile) {
             if (state.data.state.dokumenFile[adohhh].bol) {
                 form.Dokumen[shit[adohhh]].read_true = true;
+                form.Dokumen[shit[adohhh]].note = state.data.state.dokumenFile[adohhh].note;
             }
         }
         let idx;
@@ -106,14 +107,19 @@ function CreateSkalaBesar(state) {
                 link.href = url;
         window.open(link);
     }
+    
     function hehway(ae) {
         const url = window.URL.createObjectURL(state.data.state.dokumenFile[ae].file);
         return (
-            <div>
-            <iframe src={url} width="100%" height="100%"></iframe>
+            <Fragment>
+                <iframe src={url} width="100%" height="100%"></iframe>
+                <input type="text" id={ae+"_chat"}></input>
             <input type="button" onClick={() => {document.getElementById("dokumen"+ae).hidden=true }} value={"cancel"}></input>
-            <input type="button" onClick={() => { }} value={"save"}></input>
-            </div>
+                <input type="button" onClick={() => {
+                    document.getElementById("dokumen" + ae).hidden = true;
+                    state.data.setState({ dokumenFile: { ...state.data.state.dokumenFile, [ae]: { ...state.data.state.dokumenFile[ae],note:document.getElementById(ae+"_chat").value } } });
+            }} value={"save"}></input>
+            </Fragment>
         );
     }
     return (
@@ -121,6 +127,17 @@ function CreateSkalaBesar(state) {
             
            
             <form name="form">
+            <input onClick={() => {
+                navigate('/list/permohonan/skala/besar');
+            }} value={'Skala Besar'}></input>
+            <input onClick={() => {
+                navigate('/list/permohonan/skala/kecil');
+            }} value={'Skala Kecil'}></input>
+            <input onClick={() => {
+                navigate('');
+            }} value={'Cetak Pertek'}
+                hidden={role=="fd"?false:true}
+            ></input>
                 <div hidden={halaman==0?false:true}>
 
                
