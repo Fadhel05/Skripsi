@@ -39,35 +39,35 @@ class Fd extends React.Component{
                         tipe_dokumen :"Kecil",
                         dokumen_path :"surat_permohonan",
                         read_true: false,
-                        note:"null"
+                        note:""
                     },
                     {
                         nama_dokumen :"NIB.pdf",
                         tipe_dokumen :"Kecil",
                         dokumen_path :"NIB",
                         read_true: false,
-                        note:"null"
+                        note:""
                     },
                     {
                         nama_dokumen :"dokumen_lingkungan.pdf",
                         tipe_dokumen :"Kecil",
                         dokumen_path :"dokumen_lingkungan",
                         read_true: false,
-                        note:"null"
+                        note:""
                     },
                     {
                         nama_dokumen :"surat_pernyataan_pengelolaan.pdf",
                         tipe_dokumen :"Kecil",
                         dokumen_path :"surat_pernyataan_pengelolaan",
                         read_true: false,
-                        note:"null"
+                        note:""
                     },
                     {
                         nama_dokumen :"pernyataan_oss.pdf",
                         tipe_dokumen :"Kecil",
                         dokumen_path :"pernyataan_oss",
                         read_true: false,
-                        note:"null"
+                        note:""
                     }
             ],
             file2: [],

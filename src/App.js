@@ -31,7 +31,8 @@ function App() {
         haduh();
         // document.getElementById("myFile") = x;
     }
-    , []);
+        , []);
+    console.log("p");
     const saveFile = async (blob) => {
         // const formData = new FormData();
  

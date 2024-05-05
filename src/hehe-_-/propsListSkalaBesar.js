@@ -10,13 +10,13 @@ class PropsListSkalaBesar extends React.Component{
         }
         
     }
+
     render(){
     return(
         <Fragment>
             <ListSkalaBesar
                 data={this}
             ></ListSkalaBesar>
-            
         </Fragment>
     )
     }

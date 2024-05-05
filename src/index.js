@@ -19,6 +19,7 @@ import PropsListSkalaKecil from './hehe-_-/propsLisSkalaKecil';
 
 export default function App() {
   return (
+    
     <BrowserRouter>
       <AuthProvider>
       <Routes>

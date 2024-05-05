@@ -8,12 +8,13 @@ import { useNavigate } from "react-router-dom";
 function ListSkalaBesar(state) {
     const [dataBang, setDataBang] = useState([]);
     const [babilah, setBabilah] = useState(false);
+    const [x, t] = useState(false);
     const [page, setPage] = useState(0);
     const [length, setLength] = useState(0);
-    const role = useContext(Auth).token;
+    const auth = useContext(Auth);
     const Navigate = useNavigate();
     async function getData(){
-         await axios.get("http://127.0.0.1:8000/get/permohonan/skala/besar/"+role+"/").then((data) => {
+         await axios.get("http://127.0.0.1:8000/get/permohonan/skala/besar/"+auth.token+"/").then((data) => {
             
             setLength(data.data.length-1);
             setDataBang(data.data);
@@ -24,7 +25,7 @@ function ListSkalaBesar(state) {
     function deletes(){
     }
     useEffect(() => {
-        if (role == null) {
+        if (auth.token === null) {
             Navigate('/login');
         }
         getData();
@@ -34,14 +35,18 @@ function ListSkalaBesar(state) {
             <Fragment>
                 
 
-                {dataBang.length==0?null:dataBang[page].map((e) => {
+                {dataBang.length===0?null:dataBang[page].map((e) => {
                     return (
                         <tr>
                             <td> <a href={"http://localhost:3000/edit/permohonan/skala/besar/"+e["id_request"]}>{e["perusahaan"]["nib"]}</a></td>
                             <td>{e["perusahaan"]["nama_pbphh"]}</td>
+                            <td>{e["posisi"]}</td>
                             <td>
                                 <input type="button" value={"Edit"} />
-                                <input type="button" value={"Delete"} onClick={()=>deletes()} />
+                                <input type="button" value={"Delete"} onClick={() => {
+                                    document.getElementById("modal").hidden = false;
+                                    document.getElementById("yes").nami = e["id_request"];
+                                }} />
                             </td>
                         </tr>
                     );
@@ -54,9 +59,13 @@ function ListSkalaBesar(state) {
             setBabilah(true);
         }
     }, [dataBang])
-
     return (
         <Fragment>
+            <input type="button" onClick={() => {
+                auth.setToken(null);
+                window.localStorage.removeItem("role");
+                Navigate("/login");
+            }} value={"Log Out"}></input>
                         <input onClick={() => {
                 Navigate('/list/permohonan/skala/besar');
             }} value={'Skala Besar'}></input>
@@ -66,10 +75,10 @@ function ListSkalaBesar(state) {
             <input onClick={() => {
                 Navigate('');
             }} value={'Cetak Pertek'}
-                hidden={role=="fd"?false:true}
+                hidden={auth.token==="fd"?false:true}
             ></input>
                         <div>
-                <input type="button" onClick={()=>{Navigate('create/permohonan/skala/besar')}}  value={"Create"}></input>
+                <input type="button" onClick={()=>{Navigate('/create/permohonan/skala/besar')}}  value={"Create"}></input>
             <table>
                 <tr>
                     <th>NIB</th>
@@ -80,18 +89,25 @@ function ListSkalaBesar(state) {
                 {babilah ? test() : null}
                 </table>
             </div>
-            {/* {babilah ? test() : null} */}
-            {/* <input ></input> */}
+            <div id={"modal"} hidden={true}>
+                <input id={"no"} value={"No"} onClick={() => {
+                    document.getElementById("modal").hidden = true;
+                }} type="button"></input>
+                <input id={"yes"} nami="anjay" value={"yes"} onClick={(e) => {
+                    console.log("modal",e.target.nami)
+                }} type="button"></input>
+            </div>
             <input type="button" value={"Prev"} onClick={() => {
                 setPage(page -1)
             }}
-                hidden={page==0?true:false}
+                hidden={page===0?true:false}
             ></input>
             <input type="button" value={"Next"} onClick={() => {
                 setPage(page + 1)
             }}
-                hidden={length<0?true:page==length?true:false}
+                hidden={length<0?true:page===length?true:false}
             ></input>
+            
         </Fragment>
     )
 }

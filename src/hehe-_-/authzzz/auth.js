@@ -9,8 +9,7 @@ export const Auth = createContext();
 
 
 export const AuthProvider = ({children}) => {
-    const [meneketehe, setBabi] = useState();
-    const [token, setToken] = useState(localStorage.getItem("role") || "")
+    const [token, setToken] = useState(localStorage.getItem("role") || null)
     const navigate = useNavigate();
     function authLogin(cred,crid) {
         axios.post('http://127.0.0.1:8000/login', {
@@ -19,10 +18,10 @@ export const AuthProvider = ({children}) => {
         }).then((res) => {
             if (res.data.data != false) {
                 console.log(res);
-                setBabi("fasdf");
                 window.localStorage.setItem("role", res.data.data);
                 setToken(res.data.data);
                 navigate('/dashboard');
+                console.log("masuk 2")
             } else {
                 
             }
@@ -37,7 +36,7 @@ export const AuthProvider = ({children}) => {
         navigate("/create/permohonan/skala/kecil")
     }
     return (
-        <Auth.Provider value={{token,meneketehe,setBabi,funci,funca,authLogin}}>
+        <Auth.Provider value={{token,setToken,funci,funca,authLogin}}>
             {children}
         </Auth.Provider>
         

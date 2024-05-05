@@ -9,9 +9,9 @@ function CreateSkalaKecil(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
-    const role = useContext(Auth).token;
+    const auth = useContext(Auth);
     const [halaman, setHalaman] = useState(1);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     async function haduh () {
         await axios.get('http://127.0.0.1:8000/test/').then((data) => {
             
@@ -21,9 +21,9 @@ function CreateSkalaKecil(state) {
         });
     }
     useEffect(() => {
-        if (role == null) {
+        if (auth.token == null) {
             navigate('/login')
-        }else if (role != "fd") {
+        }else if (auth.token != "fd") {
             navigate('/dashboard');
         }
         haduh();
@@ -55,7 +55,7 @@ function CreateSkalaKecil(state) {
         Promise.all(kumpulanshi);
 
     }
-    async function submit() {
+    async function submit(submits) {
         const today = new Date();
         const yyyy = String(today.getFullYear());
         let mm = today.getMonth() + 1; // Months start at 0!
@@ -72,11 +72,11 @@ function CreateSkalaKecil(state) {
         form.Permohonan.sub_date += mm < 10 ? "0" + String(mm + 1) : String(mm);
         form.Permohonan.sub_date += "-";
         form.Permohonan.sub_date += dd < 10 ? ("0" + dd) : String(dd);
+        form.Permohonan.posisi = submits;
         let shit = { "a": 0, "b": 1, "c": 2, "d": 3, "e":4 };
         for (let adohhh in state.data.state.dokumenFile) {
             if (state.data.state.dokumenFile[adohhh].bol) {
                 form.Dokumen[shit[adohhh]].read_true = true;
-                form.Dokumen[shit[adohhh]].note = state.data.state.dokumenFile[adohhh].note;
             }
         }
         let idx;
@@ -108,25 +108,15 @@ function CreateSkalaKecil(state) {
                 link.href = url;
         window.open(link);
     }
-    function hehway(ae) {
-        const url = window.URL.createObjectURL(state.data.state.dokumenFile[ae].file);
-        return (
-            <div>
-            <iframe src={url} width="100%" height="100%"></iframe>
-                <input type="text" defaultValue={state.data.state.dokumenFile[ae].note} id={ae+"_chat"}></input>
-            <input type="button" onClick={() => {document.getElementById("dokumen"+ae).hidden=true }} value={"cancel"}></input>
-                <input type="button" onClick={() => {
-                    document.getElementById("dokumen" + ae).hidden = true;
-                    state.data.setState({ dokumenFile: { ...state.data.state.dokumenFile, [ae]: { ...state.data.state.dokumenFile[ae],note:document.getElementById(ae+"_chat").value } } });
-            }} value={"save"}></input>
-            </div>
-        );
-    }
     const bagas = useContext(Auth);
     return (
         <Fragment>
             <form name="form">
-
+                <input type="button" onClick={() => {
+                    auth.setToken(null);
+                window.localStorage.removeItem("role");
+                navigate("/login")
+            }} value={"Log Out"}></input>
                 <input onClick={() => {
                         navigate('/list/permohonan/skala/besar');
                     }} value={'Skala Besar'}></input>
@@ -136,7 +126,7 @@ function CreateSkalaKecil(state) {
                     <input onClick={() => {
                         navigate('');
                     }} value={'Cetak Pertek'}
-                        hidden={role=="fd"?false:true}
+                        hidden={auth.token=="fd"?false:true}
                     ></input>
 
                 <div hidden={halaman==1?false:true}>
@@ -395,12 +385,8 @@ function CreateSkalaKecil(state) {
                                                     // document.body.appendChild(link);
                                             window.open(link);
                                     }}></input>
-                                <input type="button" value={"Feedback"} onClick={()=>document.getElementById("dokumen"+ae).hidden=false} id={ae}></input>
                                 </div>  
-                                <div id={"dokumen"+ae} hidden={true}>
-                                    {hehway(ae)}
-                                    
-                                </div>
+                                
                             </div>
                         )
                     } else {
@@ -426,9 +412,9 @@ function CreateSkalaKecil(state) {
                     filex()
                 } */}
                 {/* {viewpdf()};   */}
-                <input type="button" onClick={submit} value={"Submit"}></input>
+                    <input type="button" onClick={() => { submit("pb"); navigate('/list/permohonan/skala/kecil'); }} value={"Submit"}></input>
             <input type="button" onClick={()=>viewpdf()} value={"Cancel"}></input>
-                <input type="button" onClick={duh2} value={"Save"}></input>
+                    <input type="button" onClick={() => { submit("fd"); navigate('/list/permohonan/skala/kecil'); }} value={"Save"}></input>
                 </div>
                 <input type="button" hidden={halaman == 1 ? true : false} onClick={() => {
                     setHalaman(halaman - 1);

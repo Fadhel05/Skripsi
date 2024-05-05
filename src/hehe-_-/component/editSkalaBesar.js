@@ -14,13 +14,14 @@ function EditSkalaBesar(state) {
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
     const [jenisProdukAsli, setJenisProdukAsli] = useState([]);
+    const [hid, setHid] = useState(true);
     const [daftarMesinAsli, setDaftarMesinAsli] = useState([]);
-    const role = useContext(Auth).token;
+    const auth = useContext(Auth);
     const navigate = useNavigate();
     async function haduh (ehem) {
         console.log(ehem);
         await axios.put('http://127.0.0.1:8000/edit/permohonan/skala/besar/' + ehem + "/").then((data) => {
-            console.log(data.data.perusahaan)
+            console.log(data.data)
             setDaftarMesinAsli(eval(data.data.perusahaan.daftar_mesin));
             setJenisProdukAsli(eval(data.data.perusahaan.jenis_produk));
             state.data.setState({
@@ -74,13 +75,17 @@ function EditSkalaBesar(state) {
         // console.log("database",state.data.state);
     }
     useEffect(() => {
-        if (role == null) {
+        if (auth.token == null) {
             navigate('/login')
         }
         setId(window.location.pathname.split("/")[5]);
         haduh(window.location.pathname.split("/")[5]);
     },[]) 
-    
+    useEffect(() => {
+        if (state.data.state.Perusahaan.nama_pelakuUsaha.length > 0 && state.data.state.Perusahaan.sumber_bahan.length > 0) {
+            setHid(false);
+        }
+    }, [state.data.state]);
     async function najis(formData) {
         await axios.post('http://127.0.0.1:8000/edit/dokumen/', formData, Headers = { "content-type": "multipart/form-data" }).then(e => {
             
@@ -156,7 +161,7 @@ function EditSkalaBesar(state) {
         if (typeof (state.data.state.dokumenFile[ae].file) == "string") {
             return (
                 <div>
-            <embed src={state.data.state.dokumenFile[ae].file} width="100%" height="100%"></embed>
+            <embed src={state.data.state.dokumenFile[ae].file} width="100%" height="500px"></embed>
                 <input type="text" defaultValue={state.data.state.dokumenFile[ae].note?state.data.state.dokumenFile[ae].note:""} id={ae+"_chat"}></input>
             <input type="button" onClick={() => {document.getElementById("dokumen"+ae).hidden=true }} value={"cancel"}></input>
                 <input type="button" onClick={() => {
@@ -197,8 +202,13 @@ function EditSkalaBesar(state) {
     }
     
     return (
+        <div hidden={hid}>
         <Fragment>
-            
+                <input type="button" onClick={() => {
+                    auth.setToken(null);
+                window.localStorage.removeItem("role");
+                navigate("/login")
+            }} value={"Log Out"}></input>
             <form name="form">
             <input onClick={() => {
                 navigate('/list/permohonan/skala/besar');
@@ -209,7 +219,7 @@ function EditSkalaBesar(state) {
             <input onClick={() => {
                 navigate('');
             }} value={'Cetak Pertek'}
-                hidden={role=="fd"?false:true}
+                hidden={auth.token=="fd"?false:true}
             ></input>
                 <div hidden={halaman==0?false:true}>
 
@@ -225,7 +235,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                         }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                     ></input>
                 <br></br>
                 <label for='namaPBPHH'>Nama PBPHH</label>
@@ -239,7 +249,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='KBLI'>KBLI</label>
                 <input type='text' id='KBLI'
@@ -252,7 +262,7 @@ function EditSkalaBesar(state) {
                                 }
                             })
                         }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='NIB'>NIB</label>
                 <input type='text' id='NIB'
@@ -265,7 +275,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='NPWP'>NPWP</label>
                 <input type='text' id='NPWP'
@@ -278,7 +288,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='alamatKantor'>Alamat Kantor</label>
                 <input type='text' id='alamatKantor'
@@ -291,7 +301,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='aLamatUsaha'>ALamat Usaha</label>
                 <input type='text' id='aLamatUsaha'
@@ -304,7 +314,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                     ></input>
                 </div>
                 <div hidden={halaman==1?false:true}>
@@ -321,7 +331,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                     
                 ></input><br></br>
                 
@@ -333,7 +343,7 @@ function EditSkalaBesar(state) {
                         document.getElementById("anjenglah").hidden = false;
                     }}
                     value={"Add"}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <table>
                 <tr>
@@ -365,7 +375,7 @@ function EditSkalaBesar(state) {
                                     })
                                     
                                     setJenisProdukAsli(shit);
-                                }}disabled={role=="fd"?false:true}
+                                }}disabled={auth.token=="fd"?false:true}
                             ></input></td>
                         </tr>);
                     })}
@@ -463,7 +473,7 @@ function EditSkalaBesar(state) {
                                 document.getElementById("anjinglah").hidden = false;
                             }}
                             value={"Add"}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                         ></input><br></br>
                         <table>
                         <tr>
@@ -495,7 +505,7 @@ function EditSkalaBesar(state) {
                                             })
                                             
                                             setDaftarMesinAsli(shit);
-                                        }}disabled={role=="fd"?false:true}
+                                        }}disabled={auth.token=="fd"?false:true}
                                     ></input></td>
                                 </tr>);
                             })}
@@ -583,7 +593,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='totalInvestasi'>Total Investasi</label>
                 <input type='text' id='totalInvestasi'
@@ -596,7 +606,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}></input><br></br>
+                    disabled={auth.token=="fd"?false:true}></input><br></br>
                 <label for='statusPenanamanModal'>Status Penanaman Modal</label>
                 <input type='text' id='statusPenanamanModal'
                     defaultValue={state.data.state.Perusahaan.status_permohonan}
@@ -608,7 +618,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}></input><br></br>
+                    disabled={auth.token=="fd"?false:true}></input><br></br>
                 <label for='jumlahTenagaKerja'>Jumlah Tenaga Kerja</label>
                 <input type='text' id='jumlahTenagaKerja'
                     defaultValue={state.data.state.Perusahaan.jumlah_tenaga_kerja}
@@ -620,7 +630,7 @@ function EditSkalaBesar(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}></input><br></br>
+                    disabled={auth.token=="fd"?false:true}></input><br></br>
                 </div>
                 <div hidden={halaman==2?false:true}>
 
@@ -676,6 +686,7 @@ function EditSkalaBesar(state) {
                     filex()
                 } */}
             
+            <input type="button" onClick={submit} value={"Delete"}></input>
             <input type="button" onClick={submit} value={"Submit"}></input>
             <input type="button" onClick={duh} value={"Cancel"}></input>
                 <input type="button" onClick={duh2} value={"Save"}></input>
@@ -692,6 +703,7 @@ function EditSkalaBesar(state) {
                     }} value={"Next"} hidden={halaman==2?true:false}></input>
             </form>
         </Fragment>
+        </div>
     )
 }
 

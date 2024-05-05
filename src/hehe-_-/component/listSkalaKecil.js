@@ -7,14 +7,14 @@ import { useNavigate } from "react-router-dom";
 
 function ListSkalaKecil(state) {
     const [dataBang, setDataBang] = useState([]);
-    const [babilah, setBabilah] = useState(false);
+    const [datas, setDatas] = useState(false);
     const [page, setPage] = useState(0);
     const [length, setLength] = useState(0);
     const Navigate = useNavigate();
-    const role = useContext(Auth).token;
+    const auth = useContext(Auth);
     async function getData(){
-         await axios.get("http://127.0.0.1:8000/get/permohonan/skala/kecil/"+role+"/").then((data) => {
-            console.log(data.data)
+         await axios.get("http://127.0.0.1:8000/get/permohonan/skala/kecil/"+auth.token+"/").then((data) => {
+            console.log("data",data.data)
             setLength(data.data.length-1);
             setDataBang(data.data);
             state.data.setState({data:data.data});
@@ -24,7 +24,7 @@ function ListSkalaKecil(state) {
     function deletes(){
     }
     useEffect(() => {
-        if (role == null) {
+        if (auth.token == null) {
             Navigate('/login');
         }
         getData();
@@ -35,11 +35,11 @@ function ListSkalaKecil(state) {
         return (
             <Fragment>
                 {dataBang[page].map((e) => {
-                    console.log(e);
                     return (
                         <tr>
-                            <td> <a href={"http://localhost:3000/edit/permohonan/skala/kecil/"+e["id_request"]}>{e["perusahaan"]["nib"]}</a></td>
+                            <td> <a href={"http://localhost:3000/edit/permohonan/skala/kecil/"+e["id_request"]+"/"}>{e["perusahaan"]["nib"]}</a></td>
                             <td>{e["perusahaan"]["nama_pbphh"]}</td>
+                            <td>{e["posisi"]}</td>
                             <td>
                                 <input type="button" value={"Edit"} />
                                 <input type="button" value={"Delete"} onClick={()=>deletes()} />
@@ -53,12 +53,18 @@ function ListSkalaKecil(state) {
     useEffect((e)=>{
         if (dataBang.length > 0) {
             console.log(dataBang, page);
-            setBabilah(true);
+            setDatas(true);
         }
     }, [dataBang])
 
     return (
         <Fragment>
+            <input type="button" onClick={() => {
+                auth.setToken(null);
+                window.localStorage.removeItem("role");
+                Navigate("/login");
+
+            }} value={"Log Out"}></input>
             <input onClick={() => {
                 Navigate('/list/permohonan/skala/besar');
             }} value={'Skala Besar'}></input>
@@ -68,7 +74,7 @@ function ListSkalaKecil(state) {
             <input onClick={() => {
                 Navigate('');
             }} value={'Cetak Pertek'}
-                hidden={role=="fd"?false:true}
+                hidden={auth.token=="fd"?false:true}
             ></input>
                         <div>
                 <input type="button" onClick={() => {
@@ -81,10 +87,10 @@ function ListSkalaKecil(state) {
                     <th>Progress</th>
                     <th>Action</th>
                 </tr>
-                {babilah ? test() : null}
+                {datas ? test() : null}
                 </table>
             </div>
-            {/* {babilah ? test() : null} */}
+            {/* {datas ? test() : null} */}
             {/* <input ></input> */}
             <input type="button" value={"Prev"} onClick={() => {
                 setPage(page -1)

@@ -13,12 +13,12 @@ function EditSkalaKecil(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
-    const role = useContext(Auth).token;
+    const [hid, setHid] = useState(true);
+    const auth = useContext(Auth);
     const navigate = useNavigate();
     async function haduh (ehem) {
         console.log(ehem);
         await axios.put('http://127.0.0.1:8000/edit/permohonan/skala/kecil/' + ehem + "/").then((data) => {
-            console.log(data.data.perusahaan)
             setDaftarMesin(eval(data.data.perusahaan.daftar_mesin));
             setJenisProduk(eval(data.data.perusahaan.jenis_produk));
             state.data.setState({
@@ -71,13 +71,15 @@ function EditSkalaKecil(state) {
         // console.log("database",state.data.state);
     }
     useEffect(() => {
-        if (role == null) {
+        if (auth.token == null) {
             navigate('/login')
         }
         setId(window.location.pathname.split("/")[5]);
         haduh(window.location.pathname.split("/")[5]);
     },[]) 
-    
+    useEffect(() => {
+        console.log("use", state.data.state);
+    },[state.data.state])
     async function najis(formData) {
         await axios.post('http://127.0.0.1:8000/edit/dokumen/', formData, Headers = { "content-type": "multipart/form-data" }).then(e => {
             
@@ -101,7 +103,12 @@ function EditSkalaKecil(state) {
         Promise.all(kumpulanshi);
 
     }
-    async function submit() {
+        useEffect(() => {
+        if (state.data.state.Perusahaan.nama_pelakuUsaha.length > 0 && state.data.state.Perusahaan.sumber_bahan.length > 0) {
+            setHid(false);
+        }
+    }, [state.data.state]);
+    async function submit(submits) {
         const today = new Date();
         const yyyy = String(today.getFullYear());
         let mm = today.getMonth() + 1; // Months start at 0!
@@ -118,11 +125,18 @@ function EditSkalaKecil(state) {
         form.Permohonan.sub_date += mm < 10 ? "0" + String(mm + 1) : String(mm);
         form.Permohonan.sub_date += "-";
         form.Permohonan.sub_date += dd < 10 ? ("0" + dd) : String(dd);
-        let shit = { "a": 0, "b": 1, "c": 2, "d": 3, "e":4 };
+        form.Permohonan.posisi = submits;
+        let shit = { "a": 0, "b": 1, "c": 2, "d": 3, "e": 4 };
+        if(submits=="pb")
         for (let adohhh in state.data.state.dokumenFile) {
             if (state.data.state.dokumenFile[adohhh].bol) {
                 form.Dokumen[shit[adohhh]].read_true = true;
-                form.Dokumen[shit[adohhh]].note = state.data.state.dokumenFile[adohhh].note?state.data.state.dokumenFile[adohhh].note:"";
+                if (submits == "pb") {
+                    form.Dokumen[shit[adohhh]].note = "";
+                } else {
+                    form.Dokumen[shit[adohhh]].note = state.data.state.dokumenFile[adohhh].note?state.data.state.dokumenFile[adohhh].note:"";
+                }
+                
             } else {
                 form.Dokumen[shit[adohhh]].read_true = false;
                 form.Dokumen[shit[adohhh]].note = "";
@@ -191,11 +205,16 @@ function EditSkalaKecil(state) {
     }
     
     return (
+        <div hidden={hid}>
         <Fragment>
             
             <form name="form">
 
-
+                    <input type="button" onClick={() => {
+                        auth.setToken(null);
+                window.localStorage.removeItem("role");
+                        navigate("/login");
+            }} value={"Log Out"}></input>
                             <input onClick={() => {
                 navigate('/list/permohonan/skala/besar');
             }} value={'Skala Besar'}></input>
@@ -205,7 +224,7 @@ function EditSkalaKecil(state) {
             <input onClick={() => {
                 navigate('');
             }} value={'Cetak Pertek'}
-                hidden={role=="fd"?false:true}
+                hidden={auth.token=="fd"?false:true}
             ></input>
                 <div hidden={halaman==0?false:true}>
 
@@ -221,7 +240,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input>
                 <br></br>
                 <label for='namaPBPHH'>Nama PBPHH</label>
@@ -235,7 +254,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='KBLI'>KBLI</label>
                 <input type='text' id='KBLI'
@@ -248,7 +267,7 @@ function EditSkalaKecil(state) {
                                 }
                             })
                         }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='NIB'>NIB</label>
                 <input type='text' id='NIB'
@@ -261,7 +280,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='NPWP'>NPWP</label>
                 <input type='text' id='NPWP'
@@ -274,7 +293,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='alamatKantor'>Alamat Kantor</label>
                 <input type='text' id='alamatKantor'
@@ -287,7 +306,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='aLamatUsaha'>ALamat Usaha</label>
                 <input type='text' id='aLamatUsaha'
@@ -300,7 +319,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }} 
-                    disabled={role=="fd"?false:true} 
+                    disabled={auth.token=="fd"?false:true} 
                     ></input>
                 </div>
 
@@ -320,7 +339,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='jenisPengelolahan'>Jenis Pengelolahan</label>
                 <input type='text' id='jenisPengelolahan'
@@ -333,7 +352,7 @@ function EditSkalaKecil(state) {
                         p[0] = e.target.value;
                         setJenisProduk(p);
                     }} 
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='ragamProduk'>Ragam Produk</label>
                 <input type='text' id='ragamProduk'
@@ -347,7 +366,7 @@ function EditSkalaKecil(state) {
                         p[1] = e.target.value;
                         setJenisProduk(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='KBLI2'>KBLI</label>
                 <input type='text' id='KBLI2'
@@ -360,7 +379,7 @@ function EditSkalaKecil(state) {
                         p[2] = e.target.value;
                         setJenisProduk(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='kapasitasIzinProduksi'>Kapasitas Izin Produksi</label>
                 <input type='text' id='kapasitasIzinProduksi'
@@ -373,7 +392,7 @@ function EditSkalaKecil(state) {
                         p[3] = e.target.value;
                         setJenisProduk(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='keterangan'>Keterangan</label>
                 <input type='text' id='keterangan'
@@ -386,7 +405,7 @@ function EditSkalaKecil(state) {
                         p[4] = e.target.value;
                         setJenisProduk(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='jenisMesin'>Jenis Mesin</label>
                 <input type='text' id='jenisMesin'
@@ -396,7 +415,7 @@ function EditSkalaKecil(state) {
                         p[0] = e.target.value;
                         setDaftarMesin(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                     ></input>
                 </div>
                 <div hidden={halaman==2?false:true}>
@@ -408,7 +427,7 @@ function EditSkalaKecil(state) {
                         p[1] = e.target.value;
                         setDaftarMesin(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='kapasitasProduksi'>Kapasitas Produksi</label>
                 <input type='text' id='kapasitasProduksi'
@@ -418,7 +437,7 @@ function EditSkalaKecil(state) {
                         p[2] = e.target.value;
                         setDaftarMesin(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='jumlahUnit'>Jumlah Unit</label>
                 <input type='text' id='jumlahUnit'
@@ -428,7 +447,7 @@ function EditSkalaKecil(state) {
                         p[3] = e.target.value;
                         setDaftarMesin(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='keterangan'>Keterangan</label>
                 <input type='text' id='keterangan'
@@ -438,7 +457,7 @@ function EditSkalaKecil(state) {
                         p[4] = e.target.value;
                         setDaftarMesin(p);
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='sumber'>Sumber Bahan Baku</label>
                 <input type='text' id='sumber'
@@ -451,7 +470,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}
+                    disabled={auth.token=="fd"?false:true}
                 ></input><br></br>
                 <label for='totalInvestasi'>Total Investasi</label>
                 <input type='text' id='totalInvestasi'
@@ -464,7 +483,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                     }}
-                    disabled={role=="fd"?false:true}></input><br></br>
+                    disabled={auth.token=="fd"?false:true}></input><br></br>
                 <label for='statusPenanamanModal'>Status Penanaman Modal</label>
                 <input type='text' id='statusPenanamanModal'
                     defaultValue={state.data.state.Perusahaan.status_permohonan}
@@ -476,7 +495,7 @@ function EditSkalaKecil(state) {
                             }
                         })
                         }}
-                    disabled={role=="fd"?false:true}></input>
+                    disabled={auth.token=="fd"?false:true}></input>
                     
                 </div>
                 <div hidden={halaman==3?false:true}>
@@ -545,9 +564,31 @@ function EditSkalaKecil(state) {
                     filex()
                 } */}
             
-            <input type="button" onClick={submit} value={"Submit"}></input>
-            <input type="button" onClick={duh} value={"Cancel"}></input>
-                <input type="button" onClick={duh2} value={"Save"}></input>
+            {/* <input type="button" onClick={submit} value={"Delete"}></input> */}
+            <input type="button" hidden={auth.token!="fd"?true:false} onClick={()=>{submit("pb")}} value={"Submit"}></input>
+                        <input type="button" hidden={auth.token != "fd" ? false : true} onClick={() => {
+                            axios.get('http://127.0.0.1:8000/approve/' + id + "/").then((data) => {
+                                navigate('/list/permohonan/skala/kecil');
+                            })
+            }} value={"Approve"}></input>
+                        <input type="button" hidden={auth.token != "fd" ? false : true} onClick={() => {
+                            let shit = { "a": 0, "b": 1, "c": 2, "d": 3, "e": 4 };
+                            let datas = [];
+                            for (let adohhh in state.data.state.dokumenFile) {
+                                datas.push(state.data.state.dokumenFile[adohhh]['note']?state.data.state.dokumenFile[adohhh]['note']:"");
+                            }
+                            let formdats = new FormData();
+                            formdats.append("data", datas);
+                            console.log("formdats", formdats,datas);
+                            axios.post('http://127.0.0.1:8000/reject/' + id + "/",{"data":datas}).then((data) => {
+                                navigate('/list/permohonan/skala/kecil');
+                            })
+            }} value={"Reject"}></input>
+                        <input type="button" onClick={() => {
+                            navigate('/list/permohonan/skala/kecil');
+            }} value={"Cancel"}></input>
+                <input type="button" hidden={auth.token!="fd"?true:false} onClick={()=>{submit("fd")}} value={"Save"}></input>
+                <input type="button" hidden={auth.token!="fd"?false:true} onClick={()=>{submit(auth.token)}} value={"Save"}></input>
                 <br></br>
             </div>
             <input type="button" onClick={() => {
@@ -558,8 +599,9 @@ function EditSkalaKecil(state) {
                 <input type="button" onClick={() => {
                     setHalaman(halaman+1);
                     }} value={"Next"} hidden={halaman==3?true:false}></input>
-            </form>
-        </Fragment>
+                </form>
+            </Fragment>
+            </div>
     )
 }
 

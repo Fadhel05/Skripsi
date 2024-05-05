@@ -1,0 +1,99 @@
+.title-sidebar{
+    color: #F28F6F !important;
+}
+
+.nav-link {
+    color: rgb(145, 145, 145) !important;
+}
+
+.grey{
+    color: rgb(145, 145, 145) !important;
+}
+
+.section{
+    padding-top: 60px;
+}
+
+.btn-create{
+    background-color: #F28F6F !important;
+    color: #fff !important;
+}
+
+.main-card{
+    /* display: flex;
+    align-items : center;
+    justify-content:flex-start;
+    flex-direction: column; */
+    /* padding-top: 200px; */
+    width: 1000px;
+    height: 750px;
+    top: 165px;
+    left: 416px;
+    border-radius: 14px;
+    box-shadow: 0px 4px 9px 0px rgba(0, 0, 0, 0.25);
+}
+
+.header-card{
+    margin-left: 40px;
+    padding-top: 40px;
+    padding-right: 55px;
+    display: flex;
+    justify-content:space-between;
+    align-items: end;
+    flex-direction: row;
+}
+
+.body-card{
+    padding-top: 25px;
+}
+
+.body-form{
+    padding-left: 5%;
+    width: 92%;
+}
+
+.StandardTable {
+    /* border: 1px solid #656565; */
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    /* margin-left: auto;
+    margin-right: auto; */
+    /* margin: 10; */
+    box-shadow: 2px 2px 5px #888888;
+    width: 92%;
+    margin-bottom: 15px;
+    border-spacing: 0;
+}
+.StandardTable thead tr th {
+    background-color: #F28F6F;
+}
+
+.StandardTable thead tr th:first-child {
+    z-index:-1;
+    border-radius: 10px 0 0 0;
+    -moz-border-radius: 10px 0 0 0;
+    border-radius: 10px 0 0 0;
+}
+.StandardTable thead tr th:last-child {
+    z-index:-1;
+    border-radius: 0 10px 0 0;
+    -moz-border-radius: 0 10px 0 0;
+    border-radius: 0 10px 0 0;
+}
+
+.form-control{
+    box-shadow: inset;
+    border: solid 0.5px #969696 !important;
+}
+
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.file-input{
+    margin-top: -30px !important;
+}

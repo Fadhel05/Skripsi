@@ -8,11 +8,14 @@ function CreateSkalaBesar(state) {
     const [jenisProduk, setJenisProduk] = useState(["", "", "", "", ""]);
     const [daftarMesin, setDaftarMesin] = useState(["", "", "", "", ""]);
     const [halaman, setHalaman] = useState(0);
+    const [halaman1, setHalaman1] = useState(0);
+    const [halaman2, setHalaman2] = useState(0);
+    const [halaman3, setHalaman3] = useState(0);
     const [dokumenFile, setDokumenFile] = useState(["a", "b", "c", "d", "e"]);
     const navigate = useNavigate();
     const [jenisProdukAsli, setJenisProdukAsli] = useState([]);
     const [daftarMesinAsli, setDaftarMesinAsli] = useState([]);
-    const role = useContext(Auth).token;
+    const auth = useContext(Auth);
     async function haduh () {
         await axios.get('http://127.0.0.1:8000/test/').then((data) => {
         }
@@ -20,15 +23,40 @@ function CreateSkalaBesar(state) {
         });
     }
     useEffect(() => {
-        if (role == null) {
+        if (auth.token == null) {
             navigate('/login')
-        }else if (role != "fd") {
+        }else if (auth.token != "fd") {
             navigate('/dashboard');
         }
         haduh();
 
     },[]) 
-
+    useEffect(() => {
+        var halaman1=0, halaman2=0, penanda=0;
+        for (var r in state.data.state.Perusahaan) {
+            if (penanda == 0) {
+                if (r == "alamat_usaha") {
+                    penanda = 1;
+                }
+                if(state.data.state.Perusahaan[r]){
+                    halaman1 +=1
+                }
+            } else if (penanda==1) {
+                if (r == "jenis_produk" && jenisProdukAsli.length>0) {
+                    halaman2 += 1;
+                }
+                if (r == "daftar_mesin" && daftarMesinAsli.length > 0) {
+                    halaman2 += 1;
+                }
+                if (state.data.state.Perusahaan[r]) {
+                    halaman2 += 1;
+                }
+            }
+        }
+        
+        setHalaman1(halaman1);
+        setHalaman2(halaman2);
+    }, [state.data.state.Perusahaan,halaman3,jenisProdukAsli,daftarMesinAsli])
     async function najis(formData) {
         await axios.post('http://127.0.0.1:8000/test/', formData, Headers = { "content-type": "multipart/form-data" }).then(e => {
             
@@ -75,7 +103,6 @@ function CreateSkalaBesar(state) {
         for (let adohhh in state.data.state.dokumenFile) {
             if (state.data.state.dokumenFile[adohhh].bol) {
                 form.Dokumen[shit[adohhh]].read_true = true;
-                form.Dokumen[shit[adohhh]].note = state.data.state.dokumenFile[adohhh].note;
             }
         }
         let idx;
@@ -94,7 +121,7 @@ function CreateSkalaBesar(state) {
         
         sekkiya.appendChild(pp);
     }
-
+    // function Modal
     function duh2() {
         const data = { ...state.data.state };
         var p = "dokumenFile";
@@ -108,25 +135,16 @@ function CreateSkalaBesar(state) {
         window.open(link);
     }
     
-    function hehway(ae) {
-        const url = window.URL.createObjectURL(state.data.state.dokumenFile[ae].file);
-        return (
-            <Fragment>
-                <iframe src={url} width="100%" height="100%"></iframe>
-                <input type="text" id={ae+"_chat"}></input>
-            <input type="button" onClick={() => {document.getElementById("dokumen"+ae).hidden=true }} value={"cancel"}></input>
-                <input type="button" onClick={() => {
-                    document.getElementById("dokumen" + ae).hidden = true;
-                    state.data.setState({ dokumenFile: { ...state.data.state.dokumenFile, [ae]: { ...state.data.state.dokumenFile[ae],note:document.getElementById(ae+"_chat").value } } });
-            }} value={"save"}></input>
-            </Fragment>
-        );
-    }
     return (
         <Fragment>
             
            
             <form name="form">
+                <input type="button" onClick={() => {
+                    auth.setToken(null);
+                window.localStorage.removeItem("role");
+                    navigate("/login");
+            }} value={"Log Out"}></input>
             <input onClick={() => {
                 navigate('/list/permohonan/skala/besar');
             }} value={'Skala Besar'}></input>
@@ -136,7 +154,7 @@ function CreateSkalaBesar(state) {
             <input onClick={() => {
                 navigate('');
             }} value={'Cetak Pertek'}
-                hidden={role=="fd"?false:true}
+                hidden={auth.token=="fd"?false:true}
             ></input>
                 <div hidden={halaman==0?false:true}>
 
@@ -153,8 +171,8 @@ function CreateSkalaBesar(state) {
                     }} ></input>
                 <br></br>
                 <label for='namaPBPHH'>Nama PBPHH</label>
-                <input type='text' id='namaPBPHH'
-                    onChange={(e) => {
+                    <input type='text' id='namaPBPHH'
+                        onChange={(e) => {
                         state.data.setState({
                             Perusahaan: {
                                 ...state.data.state.Perusahaan,
@@ -359,6 +377,7 @@ function CreateSkalaBesar(state) {
                             p.push(jenisProduk);
                             setJenisProdukAsli(p);
                             setJenisProduk(["", "", "", "", ""]);
+                            setHalaman3(halaman3 + 1);
                         }}
                         value={"Save"}
                     ></input>
@@ -469,6 +488,7 @@ function CreateSkalaBesar(state) {
                                     p.push(daftarMesin);
                                     setDaftarMesinAsli(p);
                                     setDaftarMesin(["", "", "", "", ""]);
+                                    setHalaman3(halaman3 + 1);
                                 }}
                                 value={"Save"}
                             ></input>
@@ -541,11 +561,6 @@ function CreateSkalaBesar(state) {
                                                     // document.body.appendChild(link);
                                             window.open(link);
                                     }}></input>
-                                <input type="button" value={"Feedback"} onClick={()=>document.getElementById("dokumen"+ae).hidden=false} id={ae}></input>
-                                </div>  
-                                <div id={"dokumen"+ae} hidden={true}>
-                                    {hehway(ae)}
-                                    
                                 </div>
                             </div>
                         )
@@ -584,7 +599,10 @@ function CreateSkalaBesar(state) {
                 <input type="button" onClick={() => {
                     setHalaman(halaman+1);
                     }} value={"Next"} hidden={halaman==2?true:false}></input>
-                
+                <br />
+                {halaman1}
+                <br />
+                {halaman2}
             </form>
         </Fragment>
     )
